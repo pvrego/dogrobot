@@ -74,11 +74,10 @@ begin
       (SOCKETS.Add_Membership, SOCKETS.Inet_Addr (Group), SOCKETS.Any_Inet_Addr));
 
    --  If this socket is intended to send messages, provide the
-   --  receiver socket address.
-   Address.Addr := SOCKETS.Inet_Addr (Group);
+   --  receiver socket address. -- Address.Addr := SOCKETS.Inet_Addr (Group);
    --  If this client is from windows, set this address of the Raspberry Pi,
    --  instead of Group.
-   -- Address.Addr := SOCKETS.Inet_Addr ("192.168.0.105");
+   Address.Addr := SOCKETS.Inet_Addr ("192.168.0.105");
 
    Address.Port := 55505;
 
