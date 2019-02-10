@@ -5,7 +5,7 @@ project DOGROBOT is
    for Source_Dirs use ("src");
 
    type Module_Type is
-      ("MOD_WIN", "MOD_RPI", "MOD_ALL");
+     ("MOD_WIN", "MOD_RPI", "MOD_ALL");
    Module : Module_Type := external ("Module", "MOD_ALL");
 
    case Module is
@@ -19,6 +19,15 @@ project DOGROBOT is
 
    package Builder is
       for Switches ("ada") use ("-g", "-k", "-s");
+
+      case Module is
+         when "MOD_ALL" =>
+         when "MOD_RPI" =>
+            for Executable ("server_rpi.adb") use "server_rpi";
+         when "MOD_WIN" =>
+            for Executable ("client_win.adb") use "client_win";
+      end case;
+
    end Builder;
 
    package Compiler is
