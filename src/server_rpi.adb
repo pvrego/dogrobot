@@ -1,12 +1,12 @@
--- =============================================================================
--- Implements the DogRobot server main application in Raspberry Pi
--- =============================================================================
+
 with GNAT.Sockets;
 with Text_IO;
 with Ada.Exceptions; use Ada.Exceptions;
 with GNAT.Traceback.Symbolic;
 
--- Socket Datagram Server application
+-- =============================================================================
+-- Implements the DogRobot server main application in Raspberry Pi
+-- =============================================================================
 procedure SERVER_RPI is
    package SOCKETS renames GNAT.Sockets;
 
