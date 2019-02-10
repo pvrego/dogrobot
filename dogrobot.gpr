@@ -22,7 +22,7 @@ project DOGROBOT is
    end Builder;
 
    package Compiler is
-      for Switches ("ada") use ("-g", "-gnatf");
+      for Switches ("ada") use ("-g", "-gnatf", "-gnateDModule=" & Module);
    end Compiler;
 
    package Linker is

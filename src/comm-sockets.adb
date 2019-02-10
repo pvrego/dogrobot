@@ -67,7 +67,7 @@ package body COMM.SOCKETS is
       SOCKETS.Set_Socket_Option
         (Socket,
          SOCKETS.IP_Protocol_For_IP_Level,
-         (SOCKETS.Add_Membership, SOCKETS.Inet_Addr (Group), SOCKETS.Any_Inet_Addr));
+         (SOCKETS.Add_Membership, SOCKETS.Inet_Addr (GROUP_ADRRESS), SOCKETS.Any_Inet_Addr));
 
       --  If this socket is intended to send messages, provide the
       --  receiver socket address.
