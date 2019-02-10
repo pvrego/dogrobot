@@ -53,8 +53,8 @@ package body COMM.SOCKETS is
 
       --  If this socket is intended to receive messages, bind it
       --  to a given socket address.
-      Address.Addr := SOCKETS.Any_Inet_Addr;
-      Address.Port := 55505;
+      Address.Addr := HOST_ADDRESS;
+      Address.Port := HOST_PORT;
 
       --  A server marks a socket as willing to receive connect events
       SOCKETS.Bind_Socket (Socket, Address);
@@ -72,8 +72,8 @@ package body COMM.SOCKETS is
       --  If this socket is intended to send messages, provide the
       --  receiver socket address.
       --        Address.Addr := SOCKETS.Inet_Addr (Group);
-      Address.Addr := SOCKETS.Inet_Addr ("192.168.0.116");
-      Address.Port := 55506;
+      Address.Addr := OTHER_ADDRESS;
+      Address.Port := OTHER_PORT;
 
       -- accept Start;
       loop
