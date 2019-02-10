@@ -75,6 +75,8 @@ package body COMM.SOCKETS is
       Address.Addr := OTHER_ADDRESS;
       Address.Port := OTHER_PORT;
 
+      --     accept Start;
+#if Module = "MOD_RPI" or Module = "MOD_ALL" then
       -- accept Start;
       loop
          --  Receive and print message from client Ping
@@ -89,10 +91,27 @@ package body COMM.SOCKETS is
             String'Output (Channel, "[ECHO] " & Message);
          end;
       end loop;
+      -- accept Stop;
+      -- SOCKETS.Close_Socket (Socket);
+      -- SOCKETS.Finalize;
 
-      --        accept Stop;
-      --        SOCKETS.Close_Socket (Socket);
-      --        SOCKETS.Finalize;
+#else -- Module = "MOD_WIN"
+   --  Return a stream associated to the connected socket
+   Channel := SOCKETS.Stream (Socket, Address);
+   --  Send message to server Pong
+   String'Output (Channel, "Hello world");
+   --  Receive and print message from server Pong
+   declare
+      Message : String := String'Input (Channel);
+   begin
+      Address := SOCKETS.Get_Address (Channel);
+      Text_IO.Put_Line (Message & " from " & SOCKETS.Image (Address));
+   end;
+   -- accept Stop;
+   SOCKETS.Close_Socket (Socket);
+   SOCKETS.Finalize;
+#end if;
+
 
    exception
       when The_Error : others =>
