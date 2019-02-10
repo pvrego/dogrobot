@@ -71,7 +71,8 @@ package body COMM.SOCKETS is
 
       --  If this socket is intended to send messages, provide the
       --  receiver socket address.
-      Address.Addr := SOCKETS.Inet_Addr (Group);
+      --        Address.Addr := SOCKETS.Inet_Addr (Group);
+      Address.Addr := SOCKETS.Inet_Addr ("192.168.0.116");
       Address.Port := 55506;
 
       -- accept Start;
