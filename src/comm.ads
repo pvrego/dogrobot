@@ -1,5 +1,5 @@
 -- =============================================================================
--- Package responsible for the communication modules.
+-- Responsible for the communication modules.
 -- =============================================================================
 package COMM is
 end COMM;
