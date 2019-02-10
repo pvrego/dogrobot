@@ -105,7 +105,7 @@ package body COMM.SOCKETS is
       Message : String := String'Input (Channel);
    begin
       Address := SOCKETS.Get_Address (Channel);
-      Text_IO.Put_Line (Message & " from " & SOCKETS.Image (Address));
+      Text_IO.Put_Line ("[From "&SOCKETS.Image (Address)&"]"&Message);
    end;
    -- accept Stop;
    SOCKETS.Close_Socket (Socket);
