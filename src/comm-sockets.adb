@@ -13,6 +13,8 @@ package body COMM.SOCKETS is
 
    begin
 
+      accept Start;
+
       SOCKETS.Initialize;
       Text_IO.Put_Line ("## Server initialized.");
 
@@ -72,29 +74,26 @@ package body COMM.SOCKETS is
       Address.Addr := SOCKETS.Inet_Addr (Group);
       Address.Port := 55506;
 
+      -- accept Start;
       loop
-         select
-            accept Start;
-            --  Receive and print message from client Ping
-            Channel := SOCKETS.Stream (Socket, Address);
-            declare
-               Message : String := String'Input (Channel);
-            begin
-               --  Get the address of the sender
-               Address := SOCKETS.Get_Address (Channel);
-               Text_IO.Put_Line (Message & " from " & SOCKETS.Image (Address));
+         --  Receive and print message from client Ping
+         Channel := SOCKETS.Stream (Socket, Address);
+         declare
+            Message : String := String'Input (Channel);
+         begin
+            --  Get the address of the sender
+            Address := SOCKETS.Get_Address (Channel);
+            Text_IO.Put_Line (Message & " from " & SOCKETS.Image (Address));
 
-               --  Send same message back to client Ping
+            --  Send same message back to client Ping
 
-               String'Output (Channel, Message);
-            end;
-
-         or accept Stop;
-            SOCKETS.Close_Socket (Socket);
-            SOCKETS.Finalize;
-         end select;
-
+            String'Output (Channel, Message);
+         end;
       end loop;
+
+      --        accept Stop;
+      --        SOCKETS.Close_Socket (Socket);
+      --        SOCKETS.Finalize;
 
    exception
       when The_Error : others =>

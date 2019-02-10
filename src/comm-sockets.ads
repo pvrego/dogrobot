@@ -12,7 +12,7 @@ package COMM.SOCKETS is
 
    task Socket_Manager is
       entry Start;
-      entry Stop;
+      --        entry Stop;
    end Socket_Manager;
 
 end COMM.SOCKETS;
