@@ -1,11 +1,11 @@
 with COMM.SOCKETS;
 
 -- =============================================================================
--- Implements the DogRobot server main application in Raspberry Pi
+-- Implements the DogRobot main application in Raspberry Pi and Windows.
 -- =============================================================================
-procedure SERVER_RPI is
+procedure DOGROBOT is
 begin
 
    COMM.SOCKETS.Socket_Manager.Start;
 
-end SERVER_RPI;
+end DOGROBOT;
