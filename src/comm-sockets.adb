@@ -84,11 +84,9 @@ package body COMM.SOCKETS is
          begin
             --  Get the address of the sender
             Address := SOCKETS.Get_Address (Channel);
-            Text_IO.Put_Line (Message & " from " & SOCKETS.Image (Address));
-
+            Text_IO.Put_Line (Message & "[from " & SOCKETS.Image (Address) & "]");
             --  Send same message back to client Ping
-
-            String'Output (Channel, Message);
+            String'Output (Channel, "[ECHO]" & Message);
          end;
       end loop;
 
