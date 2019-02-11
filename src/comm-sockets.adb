@@ -2,7 +2,7 @@ with GNAT.Sockets;
 with Text_IO;
 with Ada.Exceptions; use Ada.Exceptions;
 with GNAT.Traceback.Symbolic;
-with COMM.CODING;
+with COMM.PROCESS;
 
 package body COMM.SOCKETS is
 
@@ -85,20 +85,17 @@ package body COMM.SOCKETS is
          declare
             Message  : String := String'Input (Channel);
             Relevant : Boolean;
-            Response : String := COMM.CODING.Process_Message (Message, Relevant);
+            Response : constant String :=
+              COMM.PROCESS.Process_Input_Message (Message, Relevant);
          begin
-
             --  Get the address of the sender
             Address := SOCKETS.Get_Address (Channel);
             Text_IO.Put_Line ("[Received from " & SOCKETS.Image (Address)&"] "&Message);
-
             --  Send response back if it is relevant
             if Relevant then
                String'Output (Channel, "[RESPONSE] " & Response);
             end if;
-
          end;
-
       end loop;
       -- accept Stop;
       -- SOCKETS.Close_Socket (Socket);
