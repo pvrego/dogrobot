@@ -27,7 +27,7 @@ package body COMM.PROCESS is
                Response.Category := COMM.RESPONSE; -- Force this
                Relevant := True;
             else
-               CORE.Handle_Response (Command);
+               CORE.Handle_Response (Command); -- WRONG == server only processes requests
             end if;
             return String (COMM.CODING.To_String_Single (Response));
          end;

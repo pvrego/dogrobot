@@ -115,7 +115,7 @@ package body COMM.SOCKETS is
          Command : constant Command_Single_Type :=
            (Header       => '#',
             Id           => SYSTEM_WIN,
-            Category     => RESPONSE,
+            Category     => REQUEST,
             Container    => False,
             Footer_Slash => '/',
             Footer_Term  => '#');
