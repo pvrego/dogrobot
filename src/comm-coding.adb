@@ -80,7 +80,7 @@ package body COMM.CODING is
       -- =======================================================================
       -- Process like a common text string.
       -- =======================================================================
-      Text_IO.Put_Line ("General string message.");
+      Text_IO.Put_Line ("General string message of size" & Integer'Image (Message'Size));
 
    end Process_Message;
 
