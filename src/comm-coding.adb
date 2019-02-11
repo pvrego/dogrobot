@@ -26,7 +26,11 @@ package body COMM.CODING is
         Command.Footer_Term = '#';
    end Is_Valid;
 
-   procedure Process_Message (Message : String) is
+   function Process_Message
+     (Message  : String;
+      Relevant : out Boolean)
+      return String
+   is
    begin
 
       -- =======================================================================
@@ -40,7 +44,7 @@ package body COMM.CODING is
               COMM.CODING.To_Command_Single (COMM.String_Single_Type (Message));
          begin
 #if Private_Warnings = "TRUE" then
-            pragma Compile_Time_Warning (TRUE, "Command Single Type process");
+            pragma Compile_Time_Warning (TRUE, "Todo: Command Single Type process.");
 #end if;
             Text_IO.Put_Line ("=== Command Single Type : Map to CORE");
             Text_IO.Put_Line (Character'Image (Command.Header));
@@ -49,8 +53,13 @@ package body COMM.CODING is
             Text_IO.Put_Line (Boolean'Image (Command.Container));
             Text_IO.Put_Line (Character'Image (Command.Footer_Slash));
             Text_IO.Put_Line (Character'Image (Command.Footer_Term));
+            Relevant := Command.Category = REQUEST;
+
+#if Private_Warnings = "TRUE" then
+            pragma Compile_Time_Warning (TRUE, "Do not return the original message. Instead remove a flagged response.");
+#end if;
+            return Message;
          end;
-         return;
       end if;
 
       -- =======================================================================
@@ -64,7 +73,7 @@ package body COMM.CODING is
               COMM.CODING.To_Command_Value (COMM.String_Value_Type (Message));
          begin
 #if Private_Warnings = "TRUE" then
-            pragma Compile_Time_Warning (TRUE, "Command Value Type process");
+            pragma Compile_Time_Warning (TRUE, "Todo: Command Value Type process.");
 #end if;
             Text_IO.Put_Line ("=== Command Value Type : Map to CORE");
             Text_IO.Put_Line (Character'Image (Command.Header));
@@ -73,8 +82,12 @@ package body COMM.CODING is
             Text_IO.Put_Line (Float'Image (Command.Container));
             Text_IO.Put_Line (Character'Image (Command.Footer_Slash));
             Text_IO.Put_Line (Character'Image (Command.Footer_Term));
+            Relevant := Command.Category = REQUEST;
+#if Private_Warnings = "TRUE" then
+            pragma Compile_Time_Warning (TRUE, "Do not return the original message. Instead remove a flagged response.");
+#end if;
+            return Message;
          end;
-         return;
       end if;
 
       -- =======================================================================
@@ -88,7 +101,7 @@ package body COMM.CODING is
               COMM.CODING.To_Command_Complex (COMM.String_Complex_Type (Message));
          begin
 #if Private_Warnings = "TRUE" then
-            pragma Compile_Time_Warning (TRUE, "Command Complex Type process");
+            pragma Compile_Time_Warning (TRUE, "Todo: Command Complex Type process.");
 #end if;
             Text_IO.Put_Line ("=== Command Complex Type : Map to CORE");
             Text_IO.Put_Line (Character'Image (Command.Header));
@@ -99,14 +112,20 @@ package body COMM.CODING is
             Text_IO.Put_Line (Float'Image (Command.Container.Value));
             Text_IO.Put_Line (Character'Image (Command.Footer_Slash));
             Text_IO.Put_Line (Character'Image (Command.Footer_Term));
+            Relevant := Command.Category = REQUEST;
+#if Private_Warnings = "TRUE" then
+            pragma Compile_Time_Warning (TRUE, "Do not return the original message. Instead remove a flagged response.");
+#end if;
+            return Message;
          end;
-         return;
       end if;
 
       -- =======================================================================
       -- Process like a common text string.
       -- =======================================================================
       Text_IO.Put_Line ("=== General string message of size" & Integer'Image (Message'Size));
+      Relevant := True;
+      return Message;
 
    end Process_Message;
 

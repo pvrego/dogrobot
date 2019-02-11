@@ -83,14 +83,20 @@ package body COMM.SOCKETS is
          --  Receive and print message from client Ping
          Channel := SOCKETS.Stream (Socket, Address);
          declare
-            Message : String := String'Input (Channel);
+            Message  : String := String'Input (Channel);
+            Relevant : Boolean;
+            Response : String := COMM.CODING.Process_Message (Message, Relevant);
          begin
-            COMM.CODING.Process_Message (Message);
+
             --  Get the address of the sender
             Address := SOCKETS.Get_Address (Channel);
             Text_IO.Put_Line ("[Received from " & SOCKETS.Image (Address)&"] "&Message);
-            --  Send same message back to client Ping
-            String'Output (Channel, "[ECHO] " & Message);
+
+            --  Send response back if it is relevant
+            if Relevant then
+               String'Output (Channel, "[RESPONSE] " & Response);
+            end if;
+
          end;
 
       end loop;
