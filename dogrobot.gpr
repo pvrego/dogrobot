@@ -4,24 +4,28 @@ project DOGROBOT is
    for Exec_Dir use "bin";
    for Source_Dirs use ("src");
    for Main use ("dogrobot.adb");
-
-   type Module_Type is ("MOD_WIN", "MOD_RPI");
+   type Module_Type is
+      ("MOD_WIN", "MOD_RPI");
    Module : Module_Type := external ("Module", "MOD_RPI");
+   type Private_Warnings_Type is ("TRUE", "FALSE");
+   Private_Warnings : Private_Warnings_Type := external ("Compilation_Warnings", "TRUE");
 
    package Builder is
       for Switches ("ada") use ("-g", "-k", "-s");
 
       case Module is
-         when "MOD_RPI" =>
-            for Executable ("dogrobot.adb") use "server_rpi";
+
          when "MOD_WIN" =>
             for Executable ("dogrobot.adb") use "client_win";
-      end case;
 
+         when "MOD_RPI" =>
+            for Executable ("dogrobot.adb") use "server_rpi";
+      end case;
    end Builder;
 
    package Compiler is
-      for Switches ("ada") use ("-g", "-gnatf", "-gnateDModule=" & Module);
+      for Switches ("ada") use ("-g", "-gnatf", "-gnateDModule=" & Module,
+                                "-gnateDPrivate_Warnings=" & Private_Warnings);
    end Compiler;
 
    package Linker is

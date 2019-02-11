@@ -39,7 +39,9 @@ package body COMM.CODING is
             Command : constant COMM.Command_Single_Type :=
               COMM.CODING.To_Command_Single (COMM.String_Single_Type (Message));
          begin
+#if Private_Warnings = "TRUE" then
             pragma Compile_Time_Warning (TRUE, "Command Single Type process");
+#end if;
             Text_IO.Put_Line ("Command Single Type : Map to CORE");
          end;
          return;
@@ -55,7 +57,9 @@ package body COMM.CODING is
             Command : constant COMM.Command_Value_Type :=
               COMM.CODING.To_Command_Value (COMM.String_Value_Type (Message));
          begin
+#if Private_Warnings = "TRUE" then
             pragma Compile_Time_Warning (TRUE, "Command Value Type process");
+#end if;
             Text_IO.Put_Line ("Command Value Type : Map to CORE");
          end;
          return;
@@ -71,7 +75,9 @@ package body COMM.CODING is
             Command : constant COMM.Command_Complex_Type :=
               COMM.CODING.To_Command_Complex (COMM.String_Complex_Type (Message));
          begin
+#if Private_Warnings = "TRUE" then
             pragma Compile_Time_Warning (TRUE, "Command Complex Type process");
+#end if;
             Text_IO.Put_Line ("Command Complex Type : Map to CORE");
          end;
          return;

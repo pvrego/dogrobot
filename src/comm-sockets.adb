@@ -102,7 +102,7 @@ package body COMM.SOCKETS is
    --  Return a stream associated to the connected socket
    Channel := SOCKETS.Stream (Socket, Address);
    --  Send message to server Pong
-   String'Output (Channel, "#R/#");
+   String'Output (Channel, "#00#");
    --  Receive and print message from server Pong
    declare
       Message : String := String'Input (Channel);
