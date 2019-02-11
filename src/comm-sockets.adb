@@ -99,20 +99,38 @@ package body COMM.SOCKETS is
       -- SOCKETS.Finalize;
 
 #else -- Module = "MOD_WIN"
-   --  Return a stream associated to the connected socket
-   Channel := SOCKETS.Stream (Socket, Address);
-   --  Send message to server Pong
-   String'Output (Channel, "#00#");
-   --  Receive and print message from server Pong
-   declare
-      Message : String := String'Input (Channel);
-   begin
-      Address := SOCKETS.Get_Address (Channel);
-      Text_IO.Put_Line ("[From "&SOCKETS.Image (Address)&"]"&Message);
-   end;
-   -- accept Stop;
-   SOCKETS.Close_Socket (Socket);
-   SOCKETS.Finalize;
+      --  Return a stream associated to the connected socket
+      Channel := SOCKETS.Stream (Socket, Address);
+
+      -- =======================================================================
+      -- Send message to server
+      -- =======================================================================
+      String'Output (Channel, "Hello world single phrase.");
+
+      declare
+         Command : constant Command_Single_Type :=
+           (Header       => '#',
+            Id           => SYSTEM_WIN,
+            Category     => RESPONSE,
+            Container    => False,
+            Footer_Slash => '/',
+            Footer_Term  => '#');
+      begin
+         String'Output (Channel, String (COMM.CODING.To_String_Single (Command)));
+      end;
+
+      -- =======================================================================
+      -- Receive and print message from server Pong
+      -- =======================================================================
+      declare
+         Message : String := String'Input (Channel);
+      begin
+         Address := SOCKETS.Get_Address (Channel);
+         Text_IO.Put_Line ("[From "&SOCKETS.Image (Address)&"]"&Message);
+      end;
+      -- accept Stop;
+      SOCKETS.Close_Socket (Socket);
+      SOCKETS.Finalize;
 #end if;
 
 

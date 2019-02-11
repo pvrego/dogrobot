@@ -42,7 +42,13 @@ package body COMM.CODING is
 #if Private_Warnings = "TRUE" then
             pragma Compile_Time_Warning (TRUE, "Command Single Type process");
 #end if;
-            Text_IO.Put_Line ("Command Single Type : Map to CORE");
+            Text_IO.Put_Line ("=== Command Single Type : Map to CORE");
+            Text_IO.Put_Line (Character'Image (Command.Header));
+            Text_IO.Put_Line (COMM.Id_Type'Image (Command.Id));
+            Text_IO.Put_Line (COMM.Category_Type'Image (Command.Category));
+            Text_IO.Put_Line (Boolean'Image (Command.Container));
+            Text_IO.Put_Line (Character'Image (Command.Footer_Slash));
+            Text_IO.Put_Line (Character'Image (Command.Footer_Term));
          end;
          return;
       end if;
@@ -60,7 +66,13 @@ package body COMM.CODING is
 #if Private_Warnings = "TRUE" then
             pragma Compile_Time_Warning (TRUE, "Command Value Type process");
 #end if;
-            Text_IO.Put_Line ("Command Value Type : Map to CORE");
+            Text_IO.Put_Line ("=== Command Value Type : Map to CORE");
+            Text_IO.Put_Line (Character'Image (Command.Header));
+            Text_IO.Put_Line (COMM.Id_Type'Image (Command.Id));
+            Text_IO.Put_Line (COMM.Category_Type'Image (Command.Category));
+            Text_IO.Put_Line (Float'Image (Command.Container));
+            Text_IO.Put_Line (Character'Image (Command.Footer_Slash));
+            Text_IO.Put_Line (Character'Image (Command.Footer_Term));
          end;
          return;
       end if;
@@ -78,7 +90,15 @@ package body COMM.CODING is
 #if Private_Warnings = "TRUE" then
             pragma Compile_Time_Warning (TRUE, "Command Complex Type process");
 #end if;
-            Text_IO.Put_Line ("Command Complex Type : Map to CORE");
+            Text_IO.Put_Line ("=== Command Complex Type : Map to CORE");
+            Text_IO.Put_Line (Character'Image (Command.Header));
+            Text_IO.Put_Line (COMM.Id_Type'Image (Command.Id));
+            Text_IO.Put_Line (COMM.Category_Type'Image (Command.Category));
+            Text_IO.Put_Line (Boolean'Image (Command.Container.Status));
+            Text_IO.Put_Line (Integer'Image (Command.Container.Order));
+            Text_IO.Put_Line (Float'Image (Command.Container.Value));
+            Text_IO.Put_Line (Character'Image (Command.Footer_Slash));
+            Text_IO.Put_Line (Character'Image (Command.Footer_Term));
          end;
          return;
       end if;
@@ -86,24 +106,7 @@ package body COMM.CODING is
       -- =======================================================================
       -- Process like a common text string.
       -- =======================================================================
-      Text_IO.Put_Line ("General string message of size" & Integer'Image (Message'Size));
-      if (Message'Size = COMM.COMMAND_SINGLE_SIZE) then
-         Text_IO.Put_Line ("Single size is ok.");
-         declare
-            Command : constant COMM.Command_Single_Type :=
-              COMM.CODING.To_Command_Single (COMM.String_Single_Type (Message));
-         begin
-            Text_IO.Put_Line (Character'Image (Command.Header));
-            Text_IO.Put_Line (COMM.Id_Type'Image (Command.Id));
-            Text_IO.Put_Line (COMM.Category_Type'Image (Command.Category));
-            Text_IO.Put_Line (Boolean'Image (Command.Container));
-            Text_IO.Put_Line (Character'Image (Command.Footer_Slash));
-            Text_IO.Put_Line (Character'Image (Command.Footer_Term));
-
-            Text_IO.Put_Line ("Command Single Type : Map to CORE");
-         end;
-
-      end if;
+      Text_IO.Put_Line ("=== General string message of size" & Integer'Image (Message'Size));
 
    end Process_Message;
 
