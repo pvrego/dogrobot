@@ -39,4 +39,7 @@ package COMM.CODING is
    -- Check header and footer for a command protocol.
    function Is_Valid (Command : Command_Complex_Type) return Boolean;
 
+   -- To decode a string message into a command message
+   procedure Process_Message (Message : String);
+
 end COMM.CODING;
