@@ -81,6 +81,9 @@ package body COMM.CODING is
       -- Process like a common text string.
       -- =======================================================================
       Text_IO.Put_Line ("General string message of size" & Integer'Image (Message'Size));
+      if (Message'Size = COMM.COMMAND_SINGLE_SIZE) then
+         Text_IO.Put_Line ("Single size is ok.");
+      end if;
 
    end Process_Message;
 
