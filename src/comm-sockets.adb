@@ -81,7 +81,7 @@ package body COMM.SOCKETS is
 #if Module = "MOD_RPI" or Module = "MOD_ALL" then
       -- accept Start;
       loop
-         --  Receive and print message from client Ping
+         -- Return a stream associated to the connected socket
          Channel := SOCKETS.Stream (Socket, Address);
          declare
             Message  : String := String'Input (Channel);
@@ -104,13 +104,8 @@ package body COMM.SOCKETS is
       -- SOCKETS.Finalize;
 
 #else -- Module = "MOD_WIN"
-      --  Return a stream associated to the connected socket
+      -- Return a stream associated to the connected socket
       Channel := SOCKETS.Stream (Socket, Address);
-
-      -- =======================================================================
-      -- Send message to server
-      -- =======================================================================
-      String'Output (Channel, "Hello world single phrase.");
 
       declare
          Command : constant Command_Type :=
@@ -126,14 +121,15 @@ package body COMM.SOCKETS is
          String'Output (Channel, String (COMM.CODING.To_String (Command)));
       end;
 
-      -- =======================================================================
-      -- Receive and print message from server Pong
-      -- =======================================================================
       declare
-         Message : String := String'Input (Channel);
+         Message  : String := String'Input (Channel);
+         Success  : Boolean;
       begin
+         Success := COMM.PROCESS.Process_Response_Message (Message);
+
+         --  Get the address of the sender
          Address := SOCKETS.Get_Address (Channel);
-         Text_IO.Put_Line ("[From "&SOCKETS.Image (Address)&"]"&Message);
+         Text_IO.Put_Line ("[Received from " & SOCKETS.Image (Address)&"] "&Message);
       end;
       -- accept Stop;
       SOCKETS.Close_Socket (Socket);

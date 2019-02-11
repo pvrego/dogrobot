@@ -18,4 +18,8 @@ package COMM.PROCESS is
       Response : out Command_Type)
       return Boolean;
 
+   function Process_Response_Message
+     (Message : String)
+     return Boolean;
+
 end COMM.PROCESS;
