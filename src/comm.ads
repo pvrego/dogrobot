@@ -28,6 +28,11 @@ package COMM is
      );
    for Category_Type'Size use 1;
 
+   -- Command Protocol Sizes Definitions
+   COMMAND_SINGLE_SIZE  : constant := 4 * Character'Size;
+   COMMAND_VALUE_SIZE   : constant := 8 * Character'Size;
+   COMMAND_COMPLEX_SIZE : constant := 13 * Character'Size;
+
    -- ==========================================================================
    -- == DogRobot Command Protocol description ==
    --
@@ -55,8 +60,11 @@ package COMM is
          Footer_Term  : Character;
       end record;
    pragma Pack (Command_Single_Type);
-   for Command_Single_Type'Size use
-     3 * Character'Size + Id_Type'Size + Category_Type'Size + Boolean'Size;
+   for Command_Single_Type'Size use 4 * Character'Size;
+
+   -- Type used for converting the sockets channel stream into command type.
+   type String_Single_Type is new String (1 .. 4);
+   for String_Single_Type'Size use 4 * Character'Size;
 
    -- ==========================================================================
    -- == DogRobot Command Protocol description ==
@@ -84,15 +92,20 @@ package COMM is
          Footer_Term  : Character;
       end record;
    pragma Pack (Command_Value_Type);
-   for Command_Value_Type'Size use
-     3 * Character'Size + Id_Type'Size + Category_Type'Size + Float'Size;
+   for Command_Value_Type'Size use 8 * Character'Size;
 
+   -- Type used for converting the sockets channel stream into command type.
+   type String_Value_Type is new String (1 .. 8);
+   for String_Value_Type'Size use 8 * Character'Size;
+
+   -- Container field type for delimitation of Command_Complex_Type.
    type Container_Complex_Type is
       record
          Status : Boolean;
+         Order  : Integer;
          Value  : Float;
       end record;
-   for Container_Complex_Type'Size use Boolean'Size + Float'Size;
+   for Container_Complex_Type'Size use Boolean'Size + Integer'Size + Float'Size;
    pragma Pack (Container_Complex_Type);
 
    -- ==========================================================================
@@ -108,6 +121,10 @@ package COMM is
    -- Command_Value_Type :
    -- Container    : Record. Complex data is needed to be sent at the same time.
    --
+   -- * If a more complex data type is required for Container_Complex_Type, the
+   --   total size shall be a multiple of character size. The exceeding bits
+   --   shall be filled with a spare type.
+   --
    -- * Any message different from this standard shall be considered as a simple
    --   string and will not be forwarded for command procedures.
    -- ==========================================================================
@@ -120,9 +137,10 @@ package COMM is
          Footer_Slash : Character;
          Footer_Term  : Character;
       end record;
-   for Command_Complex_Type'Size use
-     3 * Character'Size + Id_Type'Size + Category_Type'Size +
-       Boolean'Size + Float'Size;
+   for Command_Complex_Type'Size use 13 * Character'Size;
    pragma Pack (Command_Complex_Type);
 
+   -- Type used for converting the sockets channel stream into command type.
+   type String_Complex_Type is new String (1 .. 13);
+   for String_Complex_Type'Size use 13 * Character'Size;
 end COMM;

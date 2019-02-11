@@ -2,6 +2,7 @@ with GNAT.Sockets;
 with Text_IO;
 with Ada.Exceptions; use Ada.Exceptions;
 with GNAT.Traceback.Symbolic;
+with CORE;
 
 package body COMM.SOCKETS is
 
@@ -84,12 +85,14 @@ package body COMM.SOCKETS is
          declare
             Message : String := String'Input (Channel);
          begin
+            CORE.Process_Message (Message);
             --  Get the address of the sender
             Address := SOCKETS.Get_Address (Channel);
-            Text_IO.Put_Line ("[From " & SOCKETS.Image (Address)&"] "&Message);
+            Text_IO.Put_Line ("[Received from " & SOCKETS.Image (Address)&"] "&Message);
             --  Send same message back to client Ping
             String'Output (Channel, "[ECHO] " & Message);
          end;
+
       end loop;
       -- accept Stop;
       -- SOCKETS.Close_Socket (Socket);
