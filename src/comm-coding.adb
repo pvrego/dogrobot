@@ -83,9 +83,19 @@ package body COMM.CODING is
       Text_IO.Put_Line ("General string message of size" & Integer'Image (Message'Size));
       if (Message'Size = COMM.COMMAND_SINGLE_SIZE) then
          Text_IO.Put_Line ("Single size is ok.");
-         for Index in Integer range 1 .. Message'Length loop
-            Text_IO.Put_Line (Character'Image (Message (Index)));
-         end loop;
+         declare
+            Command : constant COMM.Command_Single_Type :=
+              COMM.CODING.To_Command_Single (COMM.String_Single_Type (Message));
+         begin
+            Text_IO.Put_Line (Character'Image (Command.Header));
+            Text_IO.Put_Line (COMM.Id_Type'Image (Command.Id));
+            Text_IO.Put_Line (COMM.Category_Type'Image (Command.Category));
+            Text_IO.Put_Line (Boolean'Image (Command.Container));
+            Text_IO.Put_Line (Character'Image (Command.Footer_Slash));
+            Text_IO.Put_Line (Character'Image (Command.Footer_Term));
+
+            Text_IO.Put_Line ("Command Single Type : Map to CORE");
+         end;
 
       end if;
 
