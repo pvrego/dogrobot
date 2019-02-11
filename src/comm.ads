@@ -29,84 +29,21 @@ package COMM is
    for Category_Type'Size use 1;
 
    -- Command Protocol Sizes Definitions
-   COMMAND_SINGLE_SIZE  : constant := 4 * Character'Size;
-   COMMAND_VALUE_SIZE   : constant := 8 * Character'Size;
-   COMMAND_COMPLEX_SIZE : constant := 13 * Character'Size;
-
-   -- ==========================================================================
-   -- == DogRobot Command Protocol description ==
-   --
-   -- Header       : '#'
-   -- Id           : System identificator
-   -- Category     : Message category (request or response)
-   -- Container    : <depends on the protocol type>
-   -- Footer_Slash : '/'
-   -- Footer_End   : '#'
-   --
-   -- Command_Single_Type :
-   -- Container    : Bit/Boolean responses as acknowledgement, led state or
-   --                status.
-   --
-   -- * Any message different from this standard shall be considered as a simple
-   --   string and will not be forwarded for command procedures.
-   -- ==========================================================================
-   type Command_Single_Type is
-      record
-         Header       : Character;
-         Id           : Id_Type;
-         Category     : Category_Type;
-         Container    : Boolean;
-         Footer_Slash : Character;
-         Footer_Term  : Character;
-      end record;
-   pragma Pack (Command_Single_Type);
-   for Command_Single_Type'Size use 4 * Character'Size;
+   COMMAND_LENGTH    : constant := 8;
+   COMMAND_DATA_SIZE : constant := COMMAND_LENGTH * Character'Size;
 
    -- Type used for converting the sockets channel stream into command type.
-   type String_Single_Type is new String (1 .. 4);
-   for String_Single_Type'Size use 4 * Character'Size;
-
-   -- ==========================================================================
-   -- == DogRobot Command Protocol description ==
-   --
-   -- Header       : '#'
-   -- Id           : System identificator
-   -- Category     : Message category (request or response)
-   -- Container    : <depends on the protocol type>
-   -- Footer_Slash : '/'
-   -- Footer_End   : '#'
-   --
-   -- Command_Value_Type :
-   -- Container    : Double. Float responses as analog measurements.
-   --
-   -- * Any message different from this standard shall be considered as a simple
-   --   string and will not be forwarded for command procedures.
-   -- ==========================================================================
-   type Command_Value_Type is
-      record
-         Header       : Character;
-         Id           : Id_Type;
-         Category     : Category_Type;
-         Container    : Float;
-         Footer_Slash : Character;
-         Footer_Term  : Character;
-      end record;
-   pragma Pack (Command_Value_Type);
-   for Command_Value_Type'Size use 8 * Character'Size;
-
-   -- Type used for converting the sockets channel stream into command type.
-   type String_Value_Type is new String (1 .. 8);
-   for String_Value_Type'Size use 8 * Character'Size;
+   type String_Value_Type is new String (1 .. COMMAND_LENGTH);
+   for String_Value_Type'Size use COMMAND_DATA_SIZE;
 
    -- Container field type for delimitation of Command_Complex_Type.
-   type Container_Complex_Type is
+   type Container_Data_Type is
       record
          Status : Boolean;
-         Order  : Integer;
          Value  : Float;
       end record;
-   for Container_Complex_Type'Size use Boolean'Size + Integer'Size + Float'Size;
-   pragma Pack (Container_Complex_Type);
+   for Container_Data_Type'Size use Boolean'Size + Float'Size;
+   pragma Pack (Container_Data_Type);
 
    -- ==========================================================================
    -- == DogRobot Command Protocol description ==
@@ -121,26 +58,26 @@ package COMM is
    -- Command_Value_Type :
    -- Container    : Record. Complex data is needed to be sent at the same time.
    --
-   -- * If a more complex data type is required for Container_Complex_Type, the
+   -- * If a more complex data type is required for Container_Data_Type, the
    --   total size shall be a multiple of character size. The exceeding bits
    --   shall be filled with a spare type.
    --
    -- * Any message different from this standard shall be considered as a simple
    --   string and will not be forwarded for command procedures.
    -- ==========================================================================
-   type Command_Complex_Type is
+   type Command_Type is
       record
          Header       : Character;
          Id           : Id_Type;
          Category     : Category_Type;
-         Container    : Container_Complex_Type;
+         Data         : Container_Data_Type;
          Footer_Slash : Character;
          Footer_Term  : Character;
       end record;
-   for Command_Complex_Type'Size use 13 * Character'Size;
-   pragma Pack (Command_Complex_Type);
+   for Command_Type'Size use COMMAND_DATA_SIZE;
+   pragma Pack (Command_Type);
 
    -- Type used for converting the sockets channel stream into command type.
-   type String_Complex_Type is new String (1 .. 13);
-   for String_Complex_Type'Size use 13 * Character'Size;
+   type Command_String_Type is new String (1 .. COMMAND_LENGTH);
+   for Command_String_Type'Size use COMMAND_DATA_SIZE;
 end COMM;

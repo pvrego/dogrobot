@@ -85,16 +85,17 @@ package body COMM.SOCKETS is
          Channel := SOCKETS.Stream (Socket, Address);
          declare
             Message  : String := String'Input (Channel);
-            Relevant : Boolean;
-            Response : constant String :=
-              COMM.PROCESS.Process_Input_Message (Message, Relevant);
+            Response : COMM.Command_Type;
+            Success  : Boolean;
          begin
+            Success := COMM.PROCESS.Process_Request_Message (Message, Response);
+
             --  Get the address of the sender
             Address := SOCKETS.Get_Address (Channel);
             Text_IO.Put_Line ("[Received from " & SOCKETS.Image (Address)&"] "&Message);
             --  Send response back if it is relevant
-            if Relevant then
-               String'Output (Channel, "[RESPONSE] " & Response);
+            if Success then
+               String'Output (Channel, String (COMM.CODING.To_String (Response)));
             end if;
          end;
       end loop;
@@ -112,15 +113,17 @@ package body COMM.SOCKETS is
       String'Output (Channel, "Hello world single phrase.");
 
       declare
-         Command : constant Command_Single_Type :=
+         Command : constant Command_Type :=
            (Header       => '#',
             Id           => SYSTEM_WIN,
             Category     => REQUEST,
-            Container    => False,
+            Data         =>
+              (Status => True,
+               Value  => 0.0),
             Footer_Slash => '/',
             Footer_Term  => '#');
       begin
-         String'Output (Channel, String (COMM.CODING.To_String_Single (Command)));
+         String'Output (Channel, String (COMM.CODING.To_String (Command)));
       end;
 
       -- =======================================================================
