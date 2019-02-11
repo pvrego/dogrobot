@@ -83,7 +83,7 @@ package body COMM.CODING is
       Text_IO.Put_Line ("General string message of size" & Integer'Image (Message'Size));
       if (Message'Size = COMM.COMMAND_SINGLE_SIZE) then
          Text_IO.Put_Line ("Single size is ok.");
-         for Index in Integer range 1 .. Message'Size loop
+         for Index in Integer range 1 .. Message'Length loop
             Text_IO.Put_Line (Character'Image (Message (Index)));
          end loop;
 
