@@ -1,3 +1,5 @@
+with Text_IO;
+
 package body CORE is
 
    --------------------
@@ -13,6 +15,12 @@ package body CORE is
 #if Private_Warnings = "TRUE" then
       pragma Compile_Time_Warning (True, "Implement this service.");
 #end if;
+      Text_IO.Put_Line
+        ("Id<"&COMM.Id_Type'Image (Command.Id)&">"&
+           "-Cat<"&COMM.Category_Type'Image (Command.Category)&">"&
+           "-Cont<"&Boolean'Image (Command.Container)&">");
+
+      -- Return response
       Response.Category := COMM.RESPONSE;
       return Response;
    end Handle_Request;
@@ -30,6 +38,12 @@ package body CORE is
 #if Private_Warnings = "TRUE" then
       pragma Compile_Time_Warning (True, "Implement this service.");
 #end if;
+      Text_IO.Put_Line
+        ("Id<"&COMM.Id_Type'Image (Command.Id)&">"&
+           "-Cat<"&COMM.Category_Type'Image (Command.Category)&">"&
+           "-Cont<"&Float'Image (Command.Container)&">");
+
+      -- Return response
       Response.Category := COMM.RESPONSE;
       return Response;
    end Handle_Request;
@@ -47,6 +61,16 @@ package body CORE is
 #if Private_Warnings = "TRUE" then
       pragma Compile_Time_Warning (True, "Implement this service.");
 #end if;
+      Text_IO.Put_Line
+        ("Id<"&COMM.Id_Type'Image (Command.Id)&">"&
+           "-Cat<"&COMM.Category_Type'Image (Command.Category)&">"&
+           "-Cont<"&
+           Boolean'Image (Command.Container.Status)&","&
+           Integer'Image (Command.Container.Order)&","&
+           Float'Image (Command.Container.Value)&">"
+        );
+
+      -- Return response
       Response.Category := COMM.RESPONSE;
       return Response;
    end Handle_Request;

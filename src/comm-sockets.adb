@@ -3,6 +3,7 @@ with Text_IO;
 with Ada.Exceptions; use Ada.Exceptions;
 with GNAT.Traceback.Symbolic;
 with COMM.PROCESS;
+with COMM.CODING;
 
 package body COMM.SOCKETS is
 
