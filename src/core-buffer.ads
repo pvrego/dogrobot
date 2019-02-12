@@ -5,13 +5,19 @@ with COMM;
 -- =============================================================================
 package CORE.BUFFER is
 
-   function Retrieve_Current_Command
+   -- Retrieve the current queue command
+   function Get
      (Command : out COMM.Command_Type)
+      return Boolean;
+
+   -- Put a command in the queue
+   function Put
+     (Command : COMM.Command_Type)
       return Boolean;
 
 private
 
-   Current_Command : COMM.Command_Type := COMM.COMMAND_DEFAULT;
+   Command_Buffer : COMM.Command_Type := COMM.COMMAND_DEFAULT;
    Command_Buffer_Is_Full : Boolean := False;
 
 end CORE.BUFFER;

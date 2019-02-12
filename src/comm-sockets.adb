@@ -16,7 +16,7 @@ package body COMM.SOCKETS is
 
    begin
 
-      accept Start;
+      accept Init;
 
       SOCKETS.Initialize;
       Text_IO.Put_Line ("## Server initialized.");
@@ -78,7 +78,7 @@ package body COMM.SOCKETS is
       Address.Addr := OTHER_ADDRESS;
       Address.Port := OTHER_PORT;
 
-      --     accept Start;
+      accept Start;
 #if Module = "MOD_RPI" or Module = "MOD_ALL" then
       -- accept Start;
       loop
@@ -109,18 +109,11 @@ package body COMM.SOCKETS is
       Channel := SOCKETS.Stream (Socket, Address);
 
       declare
-         Command : COMM.Command_Type :=
-           (Header          => '#',
-            Id              => COMM.SYSTEM_WIN,
-            Category        => COMM.REQUEST,
-            Data => (Status => True,
-                     Value  => 0.0),
-            Footer_Slash    => '/',
-            Footer_Term     => '#');
+         Command : COMM.Command_Type;
       begin
---           if (CORE.BUFFER.Retrieve_Current_Command (Command)) then
+         if (CORE.BUFFER.Get (Command)) then
             String'Output (Channel, String (COMM.CODING.To_String (Command)));
---           end if;
+         end if;
       end;
 
       declare

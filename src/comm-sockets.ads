@@ -24,6 +24,7 @@ package COMM.SOCKETS is
    GROUP_ADRRESS : constant String := "239.255.128.128";
 
    task Socket_Manager is
+      entry Init;
       entry Start;
       --        entry Stop;
    end Socket_Manager;
