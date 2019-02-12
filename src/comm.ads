@@ -80,4 +80,14 @@ package COMM is
    -- Type used for converting the sockets channel stream into command type.
    type Command_String_Type is new String (1 .. COMMAND_LENGTH);
    for Command_String_Type'Size use COMMAND_DATA_SIZE;
+
+   COMMAND_DEFAULT : constant Command_Type :=
+     (Header          => ' ',
+      Id              => SYSTEM_RPI,
+      Category        => REQUEST,
+      Data => (Status => False,
+               Value  => 0.0),
+      Footer_Slash    => ' ',
+      Footer_Term     => ' ');
+
 end COMM;

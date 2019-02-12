@@ -4,6 +4,7 @@ with Ada.Exceptions; use Ada.Exceptions;
 with GNAT.Traceback.Symbolic;
 with COMM.PROCESS;
 with COMM.CODING;
+with CORE.BUFFER;
 
 package body COMM.SOCKETS is
 
@@ -108,17 +109,18 @@ package body COMM.SOCKETS is
       Channel := SOCKETS.Stream (Socket, Address);
 
       declare
-         Command : constant Command_Type :=
-           (Header       => '#',
-            Id           => SYSTEM_WIN,
-            Category     => REQUEST,
-            Data         =>
-              (Status => True,
-               Value  => 0.0),
-            Footer_Slash => '/',
-            Footer_Term  => '#');
+         Command : COMM.Command_Type :=
+           (Header          => '#',
+            Id              => COMM.SYSTEM_WIN,
+            Category        => COMM.REQUEST,
+            Data => (Status => True,
+                     Value  => 0.0),
+            Footer_Slash    => '/',
+            Footer_Term     => '#');
       begin
-         String'Output (Channel, String (COMM.CODING.To_String (Command)));
+--           if (CORE.BUFFER.Retrieve_Current_Command (Command)) then
+            String'Output (Channel, String (COMM.CODING.To_String (Command)));
+--           end if;
       end;
 
       declare
