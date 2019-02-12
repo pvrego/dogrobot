@@ -10,7 +10,7 @@ package body CORE is
      (Command : COMM.Command_Type)
       return COMM.Command_Type
    is
-      Response : COMM.Command_Type;
+      Response : COMM.Command_Type := Command;
    begin
 #if Private_Warnings = "TRUE" then
       pragma Compile_Time_Warning (True, "Implement this service.");
