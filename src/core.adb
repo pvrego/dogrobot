@@ -16,11 +16,11 @@ package body CORE is
       pragma Compile_Time_Warning (True, "Implement this service.");
 #end if;
       Text_IO.Put_Line
-        ("Id<"&COMM.Id_Type'Image (Command.Id)&">"&
-           "-Cat<"&COMM.Category_Type'Image (Command.Category)&">"&
-           "-Cont<"&
+        ("Id["&COMM.Id_Type'Image (Command.Id)&"] "&
+           "Category["&COMM.Category_Type'Image (Command.Category)&"] "&
+           "Data["&
            Boolean'Image (Command.Data.Status)&","&
-           Float'Image (Command.Data.Value)&">"
+           Float'Image (Command.Data.Value)&"]"
         );
 
       -- Return response
@@ -39,7 +39,13 @@ package body CORE is
 #if Private_Warnings = "TRUE" then
       pragma Compile_Time_Warning (True, "Implement this service.");
 #end if;
-      null;
+      Text_IO.Put_Line
+        ("Id["&COMM.Id_Type'Image (Command.Id)&"] "&
+           "Category["&COMM.Category_Type'Image (Command.Category)&"] "&
+           "Data["&
+           Boolean'Image (Command.Data.Status)&","&
+           Float'Image (Command.Data.Value)&"]"
+        );
    end Handle_Response;
 
 end CORE;
