@@ -10,7 +10,11 @@ package body DEVS.SYSFS is
    function Init
      (This : GPIO_Type;
       Forced : Boolean := False)
-      return Boolean is
+      return Boolean
+   is
+      Success : Boolean := False;
+      Gpio_Str : constant String :=
+        GPIO_Descriptor_Type'Image (TO_GPIO (This.Pin));
    begin
 #if Private_Warnings then
       pragma Compile_Time_Warning (TRUE, "Implement devices initialization.");
@@ -22,13 +26,18 @@ package body DEVS.SYSFS is
          case This.Class is
             when DIGITAL_OUT =>
                -- Handle device initialization
-               This.Export (Forced);
-               This.Set_Direction (GPIO_OUT);
-
+               if This.Export (Forced) and This.Set_Direction (GPIO_OUT) then
+                  Text_IO.Put_Line
+                    ("## "&Gpio_Str&" exported as "
+                     &Class_Type'Image (This.Class)&" successfully.");
+               end if;
             when DIGITAL_IN =>
                -- Handle device initialization
-               This.Export (Forced);
-               This.Set_Direction (GPIO_IN);
+               if This.Export (Forced) and This.Set_Direction (GPIO_IN) then
+                  Text_IO.Put_Line
+                    ("## "&Gpio_Str&" exported as "
+                     &Class_Type'Image (This.Class)&" successfully.");
+               end if;
 
             when ANALOG_IN =>
                -- Handle device initialization
@@ -53,28 +62,35 @@ package body DEVS.SYSFS is
          return False;
    end Init;
 
-   procedure DeInit
+   function DeInit
      (This : GPIO_Type)
+     return Boolean
    is
    begin
-      if Assigned_GPIO (TO_GPIO (This.Pin)) then
-         This.Unexport;
+      if Assigned_GPIO (TO_GPIO (This.Pin)) and This.Unexport then
          Assigned_GPIO (TO_GPIO (This.Pin)) := False;
+         return True;
       end if;
+      return False;
+
+   exception
+      when The_Error : others =>
+         Text_IO.Put_Line("!!! "&Ada.Exceptions.Exception_Information (The_Error));
+         return False;
    end DeInit;
 
    ------------
    -- Export --
    ------------
 
-   procedure Export (This : GPIO_Type; Forced : Boolean) is
+   function Export (This : GPIO_Type; Forced : Boolean) return Boolean is
       Full_Name : constant String := GPIO_BASE_PATH & "/export";
       Curr_File : Text_IO.File_Type;
       Cmd : constant String :=
         Format (GPIO_Number_Type'Image (TO_GPIO_NUMBER (TO_GPIO (This.Pin))));
    begin
 
-      if Forced then This.Unexport; end if;
+      if Forced and then This.Unexport then null; end if;
 
       Text_IO.Put_Line ("## Exporting "&Full_Name&"["&Cmd&"]");
       Text_IO.Open (Curr_File, Text_IO.Out_File, Full_Name);
@@ -82,16 +98,19 @@ package body DEVS.SYSFS is
       Text_IO.Close (Curr_File);
       Text_IO.Put_Line ("## Exportated "&Full_Name&"["&Cmd&"] successfully.");
 
+      return True;
+
    exception
       when The_Error : others =>
          Text_IO.Put_Line("!!! "&Ada.Exceptions.Exception_Information (The_Error));
+         return False;
    end Export;
 
    --------------
    -- Unexport --
    --------------
 
-   procedure Unexport (This : GPIO_Type) is
+   function Unexport (This : GPIO_Type) return Boolean is
       Full_Name : constant String := GPIO_BASE_PATH & "/unexport";
       Curr_File : Text_IO.File_Type;
       Cmd : constant String :=
@@ -102,12 +121,14 @@ package body DEVS.SYSFS is
       Text_IO.Put_Line (Curr_File, Cmd);
       Text_IO.Close (Curr_File);
       Text_IO.Put_Line ("## Unexported "&Full_Name&"["&Cmd&"] successfully.");
+      return True;
    exception
       when The_Error : others =>
          Text_IO.Put_Line("!!! "&Ada.Exceptions.Exception_Information (The_Error));
+         return False;
    end Unexport;
 
-   procedure Set_Direction (This : GPIO_Type; Direction : Direction_Type) is
+   function Set_Direction (This : GPIO_Type; Direction : Direction_Type) return Boolean is
       Full_Name : constant String :=
         GPIO_BASE_PATH & "/gpio" &
         Format (GPIO_Number_Type'Image (TO_GPIO_NUMBER (TO_GPIO (This.Pin))))
@@ -123,12 +144,14 @@ package body DEVS.SYSFS is
       Text_IO.Close (Curr_File);
       Text_IO.Put_Line ("## Direction of "&Full_Name&" is set successfully.");
 
+      return True;
    exception
       when The_Error : others =>
          Text_IO.Put_Line("!!! "&Ada.Exceptions.Exception_Information (The_Error));
+         return False;
    end Set_Direction;
 
-   procedure Set_Value (This : GPIO_Type; Value : Integer) is
+   function Set_Value (This : GPIO_Type; Value : Integer) return Boolean is
       Full_Name : constant String :=
         GPIO_BASE_PATH & "/gpio" &
         Format (GPIO_Number_Type'Image (TO_GPIO_NUMBER (TO_GPIO (This.Pin))))
@@ -141,13 +164,16 @@ package body DEVS.SYSFS is
          Text_IO.Put_Line (Curr_File, Format (Integer'Image (Value)));
          Text_IO.Close (Curr_File);
          Text_IO.Put_Line ("## Value of "&Full_Name&" is set successfully.");
+         return True;
       else
          Text_IO.Put_Line ("Gpio value set error.");
+         return False;
       end if;
 
    exception
       when The_Error : others =>
          Text_IO.Put_Line("!!! "&Ada.Exceptions.Exception_Information (The_Error));
+         return False;
    end Set_Value;
 
    function Get_Value (This : GPIO_Type) return Integer is
@@ -198,17 +224,18 @@ package body DEVS.SYSFS is
 
    procedure DeInit_Devices is
    begin
-      Dev_Lamp0.DeInit;
-      Dev_Lamp1.DeInit;
-      Dev_Lamp2.DeInit;
-      Dev_Motor0.DeInit;
-      Dev_CheckFlag0.DeInit;
-      Dev_CheckFlag1.DeInit;
-      Dev_Analog0.DeInit;
-      Dev_Analog1.DeInit;
-      Dev_Lamp0.DeInit;
-      Text_IO.Put_Line ("## Devices uninitialized successfully.");
-
+      if Dev_Lamp0.DeInit and
+        Dev_Lamp1.DeInit and
+        Dev_Lamp2.DeInit and
+        Dev_Motor0.DeInit and
+        Dev_CheckFlag0.DeInit and
+        Dev_CheckFlag1.DeInit and
+        Dev_Analog0.DeInit and
+        Dev_Analog1.DeInit and
+        Dev_Lamp0.DeInit
+      then
+         Text_IO.Put_Line ("## All devices uninitialized successfully.");
+      end if;
    end DeInit_Devices;
 
    procedure Test_File_Handling is

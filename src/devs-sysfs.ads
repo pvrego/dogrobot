@@ -20,7 +20,7 @@ package DEVS.SYSFS is
    --  Serial
    --    TX (GPIO14); RX (GPIO15)
 
-   -- Para usar o wiringpi (e portanto o command-line gpio), instalar via apt-get
+-- Para usar o wiringpi (e portanto o command-line gpio), instalar via apt-get
    --   sudo apt-get install wiringpi
 
    type Class_Type is (DIGITAL_OUT, DIGITAL_IN, ANALOG_IN, PWM);
@@ -46,26 +46,25 @@ package DEVS.SYSFS is
 
    type GPIO_Number_Type is new Integer range 0 .. 26;
 
-   TO_GPIO_NUMBER : constant
-     array (GPIO_Descriptor_Type) of GPIO_Number_Type :=
-     (GPIO_00_I2C0_SDA  => 0,
-      GPIO_01_I2C0_SCL  => 1,
-      GPIO_04_GP_CLK0   => 4,
-      GPIO_07_SPI_SC1   => 7,
-      GPIO_08_SPI_CS0   => 8,
-      GPIO_09_SPI_MISO  => 9,
+   TO_GPIO_NUMBER : constant array
+   (GPIO_Descriptor_Type) of GPIO_Number_Type :=
+     (GPIO_00_I2C0_SDA => 0,
+      GPIO_01_I2C0_SCL => 1,
+      GPIO_04_GP_CLK0  => 4,
+      GPIO_07_SPI_SC1  => 7,
+      GPIO_08_SPI_CS0  => 8,
+      GPIO_09_SPI_MISO => 9,
       GPIO_10_SPI_MOSI => 10,
       GPIO_11_SPI_SCLK => 11,
       GPIO_14_UART0_TX => 14,
       GPIO_15_UART0_RX => 15,
-      GPIO_17           => 17,
-      GPIO_18_PWM0      => 18,
+      GPIO_17          => 17,
+      GPIO_18_PWM0     => 18,
       GPIO_21          => 21,
       GPIO_22          => 22,
       GPIO_23          => 23,
       GPIO_24          => 24,
-      GPIO_25          => 25
-     );
+      GPIO_25          => 25);
 
    type Pin_Type is
      (PIN_03,
@@ -84,13 +83,12 @@ package DEVS.SYSFS is
       PIN_22,
       PIN_23,
       PIN_24,
-      PIN_26
-     );
+      PIN_26);
 
    -- https://raspberry-projects.com/pi/pi-hardware/raspberry-pi-model-b/model-b-io-pins
    TO_GPIO : constant array (Pin_Type) of GPIO_Descriptor_Type :=
      (-- P1 Header
-      PIN_03 => GPIO_00_I2C0_SDA,
+     PIN_03  => GPIO_00_I2C0_SDA,
       PIN_05 => GPIO_01_I2C0_SCL,
       PIN_07 => GPIO_04_GP_CLK0,
       PIN_08 => GPIO_14_UART0_TX,
@@ -109,47 +107,41 @@ package DEVS.SYSFS is
       PIN_26 => GPIO_07_SPI_SC1);
 
    DESCRIPTOR_PIN : constant array (GPIO_Descriptor_Type) of Pin_Type :=
-     (GPIO_00_I2C0_SDA  => PIN_03,
-      GPIO_01_I2C0_SCL  => PIN_05,
-      GPIO_04_GP_CLK0   => PIN_07,
+     (GPIO_00_I2C0_SDA => PIN_03,
+      GPIO_01_I2C0_SCL => PIN_05,
+      GPIO_04_GP_CLK0  => PIN_07,
       GPIO_14_UART0_TX => PIN_08,
       GPIO_15_UART0_RX => PIN_10,
-      GPIO_17           => PIN_11,
-      GPIO_18_PWM0      => PIN_12,
+      GPIO_17          => PIN_11,
+      GPIO_18_PWM0     => PIN_12,
       GPIO_21          => PIN_13,
       GPIO_22          => PIN_15,
       GPIO_23          => PIN_16,
       GPIO_24          => PIN_18,
       GPIO_10_SPI_MOSI => PIN_19,
-      GPIO_09_SPI_MISO  => PIN_21,
+      GPIO_09_SPI_MISO => PIN_21,
       GPIO_25          => PIN_22,
       GPIO_11_SPI_SCLK => PIN_23,
-      GPIO_08_SPI_CS0   => PIN_24,
-      GPIO_07_SPI_SC1   => PIN_26);
+      GPIO_08_SPI_CS0  => PIN_24,
+      GPIO_07_SPI_SC1  => PIN_26);
 
    type GPIO_Type is tagged record
       Pin   : Pin_Type;
       Class : Class_Type;
    end record;
 
-   function Init
-     (This : GPIO_Type;
-      Forced : Boolean := False)
-      return Boolean;
+   function Init (This : GPIO_Type; Forced : Boolean := False) return Boolean;
 
-   procedure DeInit
-     (This : GPIO_Type);
+   function DeInit (This : GPIO_Type) return Boolean;
 
    GPIO_BASE_PATH : constant String := "/sys/class/gpio";
 
-   type Direction_Type is
-     (GPIO_IN,
-      GPIO_OUT);
+   type Direction_Type is (GPIO_IN, GPIO_OUT);
 
-   procedure Export (This : GPIO_Type; Forced : Boolean);
-   procedure Unexport (This : GPIO_Type);
-   procedure Set_Direction (This : GPIO_Type; Direction : Direction_Type);
-   procedure Set_Value (This : GPIO_Type; Value : Integer);
+   function Export (This : GPIO_Type; Forced : Boolean) return Boolean;
+   function Unexport (This : GPIO_Type) return Boolean;
+   function Set_Direction (This : GPIO_Type; Direction : Direction_Type) return Boolean;
+   function Set_Value (This : GPIO_Type; Value : Integer) return Boolean;
    function Get_Value (This : GPIO_Type) return Integer;
 
    procedure Init_Devices (Forced : Boolean := False);
@@ -159,9 +151,9 @@ package DEVS.SYSFS is
 
 private
 
-   -- ==========================================================================
-   -- Devices in use
-   -- ==========================================================================
+-- ==========================================================================
+-- Devices in use
+-- ==========================================================================
 
    Assigned_GPIO : array (GPIO_Descriptor_Type) of Boolean :=
      (others => False);
@@ -177,5 +169,5 @@ private
 
    function Format
      (Number_Text : String) return String is
-      (Ada.Strings.Fixed.Trim(Number_Text, Ada.Strings.Left));
+     (Ada.Strings.Fixed.Trim (Number_Text, Ada.Strings.Left));
 end DEVS.SYSFS;
