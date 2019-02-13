@@ -65,7 +65,7 @@ package body DEVS.SYSFS is
       Cmd : String :=
         GPIO_Number_Type'Image (TO_GPIO_NUMBER (TO_GPIO (This.Pin)));
    begin
-      Text_IO.Put_Line ("## Exporting file <"&Full_Name&">");
+      Text_IO.Put_Line ("## Exporting <"&Full_Name&"> :="&"<"&Cmd&">");
       Text_IO.Open (Curr_File, Text_IO.Out_File, Full_Name);
       Text_IO.Put_Line
         (Curr_File,
