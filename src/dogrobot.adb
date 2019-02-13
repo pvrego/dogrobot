@@ -2,12 +2,15 @@ with COMM;
 with COMM.SOCKETS;
 with CORE.BUFFER;
 with DEVS.SYSFS;
+with Text_IO;
 
 -- =============================================================================
 -- Implements the DogRobot main application in Raspberry Pi and Windows.
 -- =============================================================================
 procedure DOGROBOT is
 begin
+
+   Text_IO.Put_Line ("============ DogRobot ============");
 
 #if Module = "MOD_RPI" then
    DEVS.SYSFS.Test_File_Handling;
