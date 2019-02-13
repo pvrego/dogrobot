@@ -1,3 +1,5 @@
+with Ada.Strings.Fixed;
+
 -- =============================================================================
 -- Responsible for SYSFS setups and management.
 -- =============================================================================
@@ -173,4 +175,7 @@ private
    Dev_Analog0    : GPIO_Type := (Pin => PIN_16, Class => ANALOG_IN);
    Dev_Analog1    : GPIO_Type := (Pin => PIN_18, Class => ANALOG_IN);
 
+   function Format
+     (Number_Text : String) return String is
+      (Ada.Strings.Fixed.Trim(Number_Text, Ada.Strings.Left));
 end DEVS.SYSFS;

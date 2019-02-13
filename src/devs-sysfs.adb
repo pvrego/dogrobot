@@ -63,13 +63,12 @@ package body DEVS.SYSFS is
       Full_Name : constant String := GPIO_BASE_PATH & "/export";
       Curr_File : Text_IO.File_Type;
       Cmd : String :=
-        GPIO_Number_Type'Image (TO_GPIO_NUMBER (TO_GPIO (This.Pin)));
+        Format (GPIO_Number_Type'Image (TO_GPIO_NUMBER (TO_GPIO (This.Pin))));
    begin
       Text_IO.Put_Line ("## Exporting <"&Full_Name&"> :="&"<"&Cmd&">");
       Text_IO.Open (Curr_File, Text_IO.Out_File, Full_Name);
       Text_IO.Put_Line
-        (Curr_File,
-         GPIO_Number_Type'Image (TO_GPIO_NUMBER (TO_GPIO (This.Pin))));
+        (Curr_File, Cmd);
       Text_IO.Close (Curr_File);
    end Export;
 
