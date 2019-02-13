@@ -100,8 +100,8 @@ package body DEVS.SYSFS is
       Text_IO.Put_Line ("## Setting direction of <"&Full_Name&">");
       Text_IO.Open (Curr_File, Text_IO.Out_File, Full_Name);
       case Direction is
-         when GPIO_IN  => Text_IO.Put_Line (Curr_File, "in");
-         when GPIO_OUT => Text_IO.Put_Line (Curr_File, "out");
+         when GPIO_IN  => Text_IO.Put (Curr_File, "in");
+         when GPIO_OUT => Text_IO.Put (Curr_File, "out");
       end case;
       Text_IO.Close (Curr_File);
    end Set_Direction;
