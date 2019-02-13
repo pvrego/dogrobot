@@ -9,7 +9,11 @@ with DEVS.SYSFS;
 procedure DOGROBOT is
 begin
 
---   COMM.SOCKETS.Socket_Manager.Init;
+#if Module = "MOD_RPI" then
+   DEVS.SYSFS.Test_File_Handling;
+#end if;
+
+   COMM.SOCKETS.Socket_Manager.Init;
 
 #if Module = "MOD_WIN" then
    declare
@@ -28,10 +32,8 @@ begin
 
 #elsif Module = "MOD_RPI" then
    DEVS.SYSFS.Init_Devices;
-   DEVS.SYSFS.Test_File_Handling;
 #end if;
 
-   -- At this point this will be deactivated.
-   -- COMM.SOCKETS.Socket_Manager.Start;
+   COMM.SOCKETS.Socket_Manager.Start;
 
 end DOGROBOT;
