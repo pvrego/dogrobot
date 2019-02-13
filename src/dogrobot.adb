@@ -31,6 +31,7 @@ begin
    DEVS.SYSFS.Test_File_Handling;
 #end if;
 
-   COMM.SOCKETS.Socket_Manager.Start;
+   -- At this point this will be deactivated.
+   -- COMM.SOCKETS.Socket_Manager.Start;
 
 end DOGROBOT;
