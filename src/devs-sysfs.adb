@@ -151,6 +151,8 @@ package body DEVS.SYSFS is
       then
          Text_IO.Put_Line
            ("There was an error while initializing the devices.");
+      else
+         Text_IO.Put_Line ("## Devices initialized successfully.");
       end if;
 
    end Init_Devices;
@@ -166,6 +168,8 @@ package body DEVS.SYSFS is
       Dev_Analog0.DeInit;
       Dev_Analog1.DeInit;
       Dev_Lamp0.DeInit;
+      Text_IO.Put_Line ("## Devices uninitialized successfully.");
+
    end DeInit_Devices;
 
    procedure Test_File_Handling is
