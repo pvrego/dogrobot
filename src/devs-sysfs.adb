@@ -22,6 +22,10 @@ package body DEVS.SYSFS is
             when DIGITAL_OUT =>
                -- Handle device initialization
                This.Export;
+               Text_IO.Put_Line
+                 ("## Setting direction of "&
+                    GPIO_Descriptor_Type'Image (TO_GPIO (This.Pin))& " to " &
+                    Direction_Type'Image (GPIO_OUT));
                This.Set_Direction (GPIO_OUT);
 
             when DIGITAL_IN =>
@@ -62,13 +66,12 @@ package body DEVS.SYSFS is
    procedure Export (This : GPIO_Type) is
       Full_Name : constant String := GPIO_BASE_PATH & "/export";
       Curr_File : Text_IO.File_Type;
-      Cmd : String :=
+      Cmd : constant String :=
         Format (GPIO_Number_Type'Image (TO_GPIO_NUMBER (TO_GPIO (This.Pin))));
    begin
       Text_IO.Put_Line ("## Exporting <"&Full_Name&"> :="&"<"&Cmd&">");
       Text_IO.Open (Curr_File, Text_IO.Out_File, Full_Name);
-      Text_IO.Put_Line
-        (Curr_File, Cmd);
+      Text_IO.Put_Line (Curr_File, Cmd);
       Text_IO.Close (Curr_File);
    end Export;
 
@@ -79,11 +82,11 @@ package body DEVS.SYSFS is
    procedure Unexport (This : GPIO_Type) is
       Full_Name : constant String := GPIO_BASE_PATH & "/unexport";
       Curr_File : Text_IO.File_Type;
+      Cmd : constant String :=
+        Format (GPIO_Number_Type'Image (TO_GPIO_NUMBER (TO_GPIO (This.Pin))));
    begin
       Text_IO.Open (Curr_File, Text_IO.Out_File, Full_Name);
-      Text_IO.Put_Line
-        (Curr_File,
-         GPIO_Number_Type'Image (TO_GPIO_NUMBER (TO_GPIO (This.Pin))));
+      Text_IO.Put_Line (Curr_File, Cmd);
       Text_IO.Close (Curr_File);
    end Unexport;
 
