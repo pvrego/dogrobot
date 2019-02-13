@@ -1,4 +1,10 @@
 #!/bin/bash
 
+# Svn update
+svn up --force
+
 # Build file for Raspberry Pi command line
 gprbuild -f -d -Pdogrobot.gpr -XModule=MOD_RPI
+
+# Run server
+bin/server_rpi
