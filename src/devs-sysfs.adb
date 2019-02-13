@@ -23,7 +23,7 @@ package body DEVS.SYSFS is
          case This.Class is
             when DIGITAL_OUT =>
                -- Handle device initialization
-               This.Export;
+               This.Export (Forced);
                Text_IO.Put_Line
                  ("## Setting direction of "&
                     GPIO_Descriptor_Type'Image (TO_GPIO (This.Pin))& " to " &
@@ -32,7 +32,7 @@ package body DEVS.SYSFS is
 
             when DIGITAL_IN =>
                -- Handle device initialization
-               This.Export;
+               This.Export (Forced);
                This.Set_Direction (GPIO_IN);
 
             when ANALOG_IN =>
@@ -71,12 +71,15 @@ package body DEVS.SYSFS is
    -- Export --
    ------------
 
-   procedure Export (This : GPIO_Type) is
+   procedure Export (This : GPIO_Type; Forced : Boolean) is
       Full_Name : constant String := GPIO_BASE_PATH & "/export";
       Curr_File : Text_IO.File_Type;
       Cmd : constant String :=
         Format (GPIO_Number_Type'Image (TO_GPIO_NUMBER (TO_GPIO (This.Pin))));
    begin
+
+      if Forced then This.Unexport; end if;
+
       Text_IO.Put_Line ("## Exporting <"&Full_Name&"> :="&"<"&Cmd&">");
       Text_IO.Open (Curr_File, Text_IO.Out_File, Full_Name);
       Text_IO.Put_Line (Curr_File, Cmd);

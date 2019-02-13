@@ -146,7 +146,7 @@ package DEVS.SYSFS is
      (GPIO_IN,
       GPIO_OUT);
 
-   procedure Export (This : GPIO_Type);
+   procedure Export (This : GPIO_Type; Forced : Boolean);
    procedure Unexport (This : GPIO_Type);
    procedure Set_Direction (This : GPIO_Type; Direction : Direction_Type);
    procedure Set_Value (This : GPIO_Type; Value : Integer);
