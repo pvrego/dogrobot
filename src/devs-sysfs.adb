@@ -92,6 +92,7 @@ package body DEVS.SYSFS is
       File_In : Text_IO.File_Type;
       File_Path : String := "./home/pi/test_file";
    begin
+      Text_IO.Put_Line ("File will open.");
       Text_IO.Open (File => File_In,
                     Mode => Text_IO.In_File,
                     Name => File_Path);
