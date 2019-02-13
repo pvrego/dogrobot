@@ -6,8 +6,14 @@ package body DEVS.SYSFS is
    -- Init --
    ----------
 
-   function Init (This : GPIO_Type) return Boolean is
+   function Init
+     (This : GPIO_Type;
+      Forced : Boolean := False)
+      return Boolean is
    begin
+#if Private_Warnings then
+      pragma Compile_Time_Warning (TRUE, "Implement devices initialization.");
+#end if;
       -- Check if the pin is already assigned to another GPIO device to avoid
       -- function conflicts.
       if not Assigned_Descriptor (PIN_DESCRIPTOR (This.Pin)) then
@@ -57,7 +63,8 @@ package body DEVS.SYSFS is
       null;
    end Unexport;
 
-   procedure Init_Devices is
+   procedure Init_Devices
+     (Forced : Boolean := False) is
    begin
 
       if not Dev_Lamp0.Init or

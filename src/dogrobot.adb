@@ -9,7 +9,7 @@ with DEVS.SYSFS;
 procedure DOGROBOT is
 begin
 
-   COMM.SOCKETS.Socket_Manager.Init;
+--   COMM.SOCKETS.Socket_Manager.Init;
 
 #if Module = "MOD_WIN" then
    declare

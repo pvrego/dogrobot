@@ -130,12 +130,15 @@ package DEVS.SYSFS is
       Class : Class_Type;
    end record;
 
-   function Init (This : GPIO_Type) return Boolean;
+   function Init
+     (This : GPIO_Type;
+      Forced : Boolean := False)
+      return Boolean;
 
    procedure Export (This : GPIO_Type);
    procedure Unexport (This : GPIO_Type);
 
-   procedure Init_Devices;
+   procedure Init_Devices (Forced : Boolean := False);
    procedure DeInit_Devices;
 
    procedure Test_File_Handling;
