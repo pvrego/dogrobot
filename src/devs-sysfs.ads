@@ -5,23 +5,15 @@ with Ada.Strings.Fixed;
 -- =============================================================================
 package DEVS.SYSFS is
 
-   --  ===================
-   --  GPIO functions list
-   --  ===================
-   --  PWM (pulse-width modulation)
-   --    Software PWM available on all pins
-   --    Hardware PWM available on GPIO12, GPIO13, GPIO18, GPIO19
-   --  SPI
-   --    SPI0: MOSI (GPIO10); MISO (GPIO9); SCLK (GPIO11); CE0 (GPIO8), CE1 (GPIO7)
-   --    SPI1: MOSI (GPIO20); MISO (GPIO19); SCLK (GPIO21); CE0 (GPIO18); CE1 (GPIO17); CE2 (GPIO16)
-   --  I2C
-   --    Data: (GPIO2); Clock (GPIO3)
-   --    EEPROM Data: (GPIO0); EEPROM Clock (GPIO1)
-   --  Serial
-   --    TX (GPIO14); RX (GPIO15)
-
--- Para usar o wiringpi (e portanto o command-line gpio), instalar via apt-get
+   -- Para usar o wiringpi (e portanto o command-line gpio), instalar via apt-get
    --   sudo apt-get install wiringpi
+
+   procedure Init_Devices (Forced : Boolean := False);
+   procedure DeInit_Devices;
+
+   procedure Test_File_Handling;
+
+private
 
    type Class_Type is (DIGITAL_OUT, DIGITAL_IN, ANALOG_IN, PWM);
 
@@ -47,7 +39,7 @@ package DEVS.SYSFS is
    type GPIO_Number_Type is new Integer range 0 .. 26;
 
    TO_GPIO_NUMBER : constant array
-   (GPIO_Descriptor_Type) of GPIO_Number_Type :=
+     (GPIO_Descriptor_Type) of GPIO_Number_Type :=
      (GPIO_00_I2C0_SDA => 0,
       GPIO_01_I2C0_SCL => 1,
       GPIO_04_GP_CLK0  => 4,
@@ -88,7 +80,7 @@ package DEVS.SYSFS is
    -- https://raspberry-projects.com/pi/pi-hardware/raspberry-pi-model-b/model-b-io-pins
    TO_GPIO : constant array (Pin_Type) of GPIO_Descriptor_Type :=
      (-- P1 Header
-     PIN_03  => GPIO_00_I2C0_SDA,
+      PIN_03  => GPIO_00_I2C0_SDA,
       PIN_05 => GPIO_01_I2C0_SCL,
       PIN_07 => GPIO_04_GP_CLK0,
       PIN_08 => GPIO_14_UART0_TX,
@@ -144,16 +136,9 @@ package DEVS.SYSFS is
    function Set_Value (This : GPIO_Type; Value : Integer) return Boolean;
    function Get_Value (This : GPIO_Type) return Integer;
 
-   procedure Init_Devices (Forced : Boolean := False);
-   procedure DeInit_Devices;
-
-   procedure Test_File_Handling;
-
-private
-
--- ==========================================================================
--- Devices in use
--- ==========================================================================
+   -- ==========================================================================
+   -- Devices in use
+   -- ==========================================================================
 
    Assigned_GPIO : array (GPIO_Descriptor_Type) of Boolean :=
      (others => False);
