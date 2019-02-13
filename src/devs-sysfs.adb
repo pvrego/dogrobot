@@ -1,4 +1,6 @@
 with Text_IO;
+with Ada.Exceptions;
+with GNAT.Traceback.Symbolic;
 
 package body DEVS.SYSFS is
 
@@ -98,12 +100,17 @@ package body DEVS.SYSFS is
       Curr_File : Text_IO.File_Type;
    begin
       Text_IO.Put_Line ("## Setting direction of <"&Full_Name&">");
-      Text_IO.Open (Curr_File, Text_IO.Out_File, Full_Name);
+      Text_IO.Open (Curr_File, Text_IO.Append_File, Full_Name);
       case Direction is
          when GPIO_IN  => Text_IO.Put (Curr_File, "in");
          when GPIO_OUT => Text_IO.Put (Curr_File, "out");
       end case;
       Text_IO.Close (Curr_File);
+
+   exception
+      when The_Error : others =>
+         Text_IO.Put_Line("!!! "&Ada.Exceptions.Exception_Information (The_Error));
+         Text_Io.Put_Line ("Traceback => " & GNAT.Traceback.Symbolic.Symbolic_Traceback(The_Error));
    end Set_Direction;
 
    procedure Set_Value (This : GPIO_Type; Value : Integer) is
