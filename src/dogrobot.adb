@@ -12,10 +12,6 @@ begin
 
    Text_IO.Put_Line ("============ DogRobot ============");
 
-#if Module = "MOD_RPI" then
-   DEVS.SYSFS.Test_File_Handling;
-#end if;
-
    COMM.SOCKETS.Socket_Manager.Init;
 
 #if Module = "MOD_WIN" then

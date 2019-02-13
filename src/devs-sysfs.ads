@@ -44,7 +44,7 @@ package DEVS.SYSFS is
 
    type GPIO_Number_Type is new Integer range 0 .. 26;
 
-   GPIO_DESCRIPTOR_NUMBER : constant
+   TO_GPIO_NUMBER : constant
      array (GPIO_Descriptor_Type) of GPIO_Number_Type :=
      (GPIO_00_I2C0_SDA  => 0,
       GPIO_01_I2C0_SCL  => 1,
@@ -86,7 +86,7 @@ package DEVS.SYSFS is
      );
 
    -- https://raspberry-projects.com/pi/pi-hardware/raspberry-pi-model-b/model-b-io-pins
-   PIN_DESCRIPTOR : constant array (Pin_Type) of GPIO_Descriptor_Type :=
+   TO_GPIO : constant array (Pin_Type) of GPIO_Descriptor_Type :=
      (-- P1 Header
       PIN_03 => GPIO_00_I2C0_SDA,
       PIN_05 => GPIO_01_I2C0_SCL,
@@ -135,8 +135,17 @@ package DEVS.SYSFS is
       Forced : Boolean := False)
       return Boolean;
 
+   GPIO_BASE_PATH : constant String := "/sys/class/gpio";
+
+   type Direction_Type is
+     (GPIO_IN,
+      GPIO_OUT);
+
    procedure Export (This : GPIO_Type);
    procedure Unexport (This : GPIO_Type);
+   procedure Set_Direction (This : GPIO_Type; Direction : Direction_Type);
+   procedure Set_Value (This : GPIO_Type; Value : Integer);
+   function Get_Value (This : GPIO_Type) return Integer;
 
    procedure Init_Devices (Forced : Boolean := False);
    procedure DeInit_Devices;
@@ -149,7 +158,7 @@ private
    -- Devices in use
    -- ==========================================================================
 
-   Assigned_Descriptor : array (GPIO_Descriptor_Type) of Boolean :=
+   Assigned_GPIO : array (GPIO_Descriptor_Type) of Boolean :=
      (others => False);
 
    Dev_Lamp0      : GPIO_Type := (Pin => PIN_03, Class => DIGITAL_OUT);

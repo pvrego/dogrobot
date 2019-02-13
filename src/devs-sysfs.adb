@@ -16,16 +16,18 @@ package body DEVS.SYSFS is
 #end if;
       -- Check if the pin is already assigned to another GPIO device to avoid
       -- function conflicts.
-      if not Assigned_Descriptor (PIN_DESCRIPTOR (This.Pin)) then
+      if not Assigned_GPIO (TO_GPIO (This.Pin)) then
 
          case This.Class is
             when DIGITAL_OUT =>
                -- Handle device initialization
-               null;
+               This.Export;
+               This.Set_Direction (GPIO_OUT);
 
             when DIGITAL_IN =>
                -- Handle device initialization
-               null;
+               This.Export;
+               This.Set_Direction (GPIO_IN);
 
             when ANALOG_IN =>
                -- Handle device initialization
@@ -37,7 +39,7 @@ package body DEVS.SYSFS is
 
          end case;
 
-         Assigned_Descriptor (PIN_DESCRIPTOR (This.Pin)) := True;
+         Assigned_GPIO (TO_GPIO (This.Pin)) := True;
 
          return True;
       else
@@ -50,8 +52,14 @@ package body DEVS.SYSFS is
    ------------
 
    procedure Export (This : GPIO_Type) is
+      Full_Name : constant String := GPIO_BASE_PATH & "/export";
+      Curr_File : Text_IO.File_Type;
    begin
-      null;
+      Text_IO.Open (Curr_File, Text_IO.Out_File, Full_Name);
+      Text_IO.Put_Line
+        (Curr_File,
+         GPIO_Number_Type'Image (TO_GPIO_NUMBER (TO_GPIO (This.Pin))));
+      Text_IO.Close (Curr_File);
    end Export;
 
    --------------
@@ -59,9 +67,56 @@ package body DEVS.SYSFS is
    --------------
 
    procedure Unexport (This : GPIO_Type) is
+      Full_Name : constant String := GPIO_BASE_PATH & "/unexport";
+      Curr_File : Text_IO.File_Type;
    begin
-      null;
+      Text_IO.Open (Curr_File, Text_IO.Out_File, Full_Name);
+      Text_IO.Put_Line
+        (Curr_File,
+         GPIO_Number_Type'Image (TO_GPIO_NUMBER (TO_GPIO (This.Pin))));
+      Text_IO.Close (Curr_File);
    end Unexport;
+
+   procedure Set_Direction (This : GPIO_Type; Direction : Direction_Type) is
+      Full_Name : constant String :=
+        GPIO_BASE_PATH & "/gpio" &
+        GPIO_Number_Type'Image (TO_GPIO_NUMBER (TO_GPIO (This.Pin)))
+        & "/direction";
+      Curr_File : Text_IO.File_Type;
+   begin
+      Text_IO.Open (Curr_File, Text_IO.Out_File, Full_Name);
+      case Direction is
+         when GPIO_IN  => Text_IO.Put_Line (Curr_File, "in");
+         when GPIO_OUT => Text_IO.Put_Line (Curr_File, "out");
+      end case;
+      Text_IO.Close (Curr_File);
+   end Set_Direction;
+
+   procedure Set_Value (This : GPIO_Type; Value : Integer) is
+      Full_Name : constant String :=
+        GPIO_BASE_PATH & "/gpio" &
+        GPIO_Number_Type'Image (TO_GPIO_NUMBER (TO_GPIO (This.Pin)))
+        & "/value";
+      Curr_File : Text_IO.File_Type;
+   begin
+      Text_IO.Open (Curr_File, Text_IO.Out_File, Full_Name);
+      Text_IO.Put_Line (Curr_File, Integer'Image (Value));
+      Text_IO.Close (Curr_File);
+   end Set_Value;
+
+   function Get_Value (This : GPIO_Type) return Integer is
+      Full_Name : constant String :=
+        GPIO_BASE_PATH & "/gpio" &
+        GPIO_Number_Type'Image (TO_GPIO_NUMBER (TO_GPIO (This.Pin)))
+        & "/value";
+      Curr_File : Text_IO.File_Type;
+      Value : Integer;
+   begin
+      Text_IO.Open (Curr_File, Text_IO.In_File, Full_Name);
+      Value := Integer'Value (Text_IO.Get_Line (Curr_File));
+      Text_IO.Close (Curr_File);
+      return Value;
+   end Get_Value;
 
    procedure Init_Devices
      (Forced : Boolean := False) is
@@ -85,7 +140,15 @@ package body DEVS.SYSFS is
 
    procedure DeInit_Devices is
    begin
-      null;
+      Dev_Lamp0.Unexport;
+      Dev_Lamp1.Unexport;
+      Dev_Lamp2.Unexport;
+      Dev_Motor0.Unexport;
+      Dev_CheckFlag0.Unexport;
+      Dev_CheckFlag1.Unexport;
+      Dev_Analog0.Unexport;
+      Dev_Analog1.Unexport;
+      Dev_Lamp0.Unexport;
    end DeInit_Devices;
 
    procedure Test_File_Handling is
@@ -102,4 +165,5 @@ package body DEVS.SYSFS is
       Text_IO.Close (File_In);
       Text_IO.Put_Line (File_Path & "is closed.");
    end Test_File_Handling;
+
 end DEVS.SYSFS;
