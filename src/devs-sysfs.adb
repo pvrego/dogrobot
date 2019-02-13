@@ -57,8 +57,10 @@ package body DEVS.SYSFS is
      (This : GPIO_Type)
    is
    begin
-      This.Unexport;
-      Assigned_GPIO (TO_GPIO (This.Pin)) := False;
+      if Assigned_GPIO (TO_GPIO (This.Pin)) then
+         This.Unexport;
+         Assigned_GPIO (TO_GPIO (This.Pin)) := False;
+      end if;
    end DeInit;
 
    ------------
