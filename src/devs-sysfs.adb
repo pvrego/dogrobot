@@ -51,6 +51,12 @@ package body DEVS.SYSFS is
       else
          return False;
       end if;
+
+   exception
+      when The_Error : others =>
+         Text_IO.Put_Line("!!! "&Ada.Exceptions.Exception_Information (The_Error));
+         Text_Io.Put_Line ("Traceback => " & GNAT.Traceback.Symbolic.Symbolic_Traceback(The_Error));
+         return False;
    end Init;
 
    procedure DeInit
@@ -75,6 +81,11 @@ package body DEVS.SYSFS is
       Text_IO.Open (Curr_File, Text_IO.Out_File, Full_Name);
       Text_IO.Put_Line (Curr_File, Cmd);
       Text_IO.Close (Curr_File);
+
+   exception
+      when The_Error : others =>
+         Text_IO.Put_Line("!!! "&Ada.Exceptions.Exception_Information (The_Error));
+         Text_Io.Put_Line ("Traceback => " & GNAT.Traceback.Symbolic.Symbolic_Traceback(The_Error));
    end Export;
 
    --------------
@@ -90,6 +101,10 @@ package body DEVS.SYSFS is
       Text_IO.Open (Curr_File, Text_IO.Out_File, Full_Name);
       Text_IO.Put_Line (Curr_File, Cmd);
       Text_IO.Close (Curr_File);
+   exception
+      when The_Error : others =>
+         Text_IO.Put_Line("!!! "&Ada.Exceptions.Exception_Information (The_Error));
+         Text_Io.Put_Line ("Traceback => " & GNAT.Traceback.Symbolic.Symbolic_Traceback(The_Error));
    end Unexport;
 
    procedure Set_Direction (This : GPIO_Type; Direction : Direction_Type) is
@@ -127,6 +142,13 @@ package body DEVS.SYSFS is
       else
          Text_IO.Put_Line ("Gpio value set error.");
       end if;
+
+   exception
+      when The_Error : others =>
+         Text_IO.Put_Line("!!! "&Ada.Exceptions.Exception_Information (The_Error));
+         Text_Io.Put_Line ("Traceback => " & GNAT.Traceback.Symbolic.Symbolic_Traceback(The_Error));
+
+
    end Set_Value;
 
    function Get_Value (This : GPIO_Type) return Integer is
@@ -146,6 +168,12 @@ package body DEVS.SYSFS is
       end if;
 
       return Value;
+
+   exception
+      when The_Error : others =>
+         Text_IO.Put_Line("!!! "&Ada.Exceptions.Exception_Information (The_Error));
+         Text_Io.Put_Line ("Traceback => " & GNAT.Traceback.Symbolic.Symbolic_Traceback(The_Error));
+         return 0;
    end Get_Value;
 
    procedure Init_Devices
