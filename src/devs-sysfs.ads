@@ -49,7 +49,7 @@ package DEVS.SYSFS is
    -- https://raspberry-projects.com/pi/pi-hardware/raspberry-pi-model-b/model-b-io-pins
    PIN_DESCRIPTOR : constant array (Pin_Type) of Descriptor_Type :=
      (-- P1 Header
-     03      => GPIO0_I2C0_SDA,
+      03     => GPIO0_I2C0_SDA,
       05     => GPIO1_I2C0_SCL,
       07     => GPIO4_GP_CLK0,
       08     => GPIO14_UART0_TX,
@@ -110,9 +110,9 @@ private
    Assigned_Descriptor : array (Descriptor_Type) of Boolean :=
      (others => False);
 
-   Dev_Lamp0      : GPIO_Type := (Pin => 3, Class => DIGITAL_OUT);
-   Dev_Lamp1      : GPIO_Type := (Pin => 5, Class => DIGITAL_OUT);
-   Dev_Lamp2      : GPIO_Type := (Pin => 7, Class => DIGITAL_OUT);
+   Dev_Lamp0      : GPIO_Type := (Pin => 03, Class => DIGITAL_OUT);
+   Dev_Lamp1      : GPIO_Type := (Pin => 05, Class => DIGITAL_OUT);
+   Dev_Lamp2      : GPIO_Type := (Pin => 07, Class => DIGITAL_OUT);
    Dev_Motor0     : GPIO_Type := (Pin => 12, Class => PWM);
    Dev_CheckFlag0 : GPIO_Type := (Pin => 13, Class => DIGITAL_IN);
    Dev_CheckFlag1 : GPIO_Type := (Pin => 15, Class => DIGITAL_IN);
