@@ -9,7 +9,7 @@ package body DEVS.SYSFS is
 
    function Init
      (This : GPIO_Type;
-      Forced : Boolean := False)
+      Forced : Boolean)
       return Boolean
    is
       Success : Boolean := False;
@@ -96,7 +96,7 @@ package body DEVS.SYSFS is
       Text_IO.Open (Curr_File, Text_IO.Out_File, Full_Name);
       Text_IO.Put_Line (Curr_File, Cmd);
       Text_IO.Close (Curr_File);
-      Text_IO.Put_Line ("## Exportated "&Full_Name&"["&Cmd&"] successfully.");
+      Text_IO.Put_Line ("## Exported "&Full_Name&"["&Cmd&"] successfully.");
 
       return True;
 
@@ -204,15 +204,15 @@ package body DEVS.SYSFS is
      (Forced : Boolean := False) is
    begin
 
-      if not Dev_Lamp0.Init or
-        not Dev_Lamp1.Init or
-        not Dev_Lamp2.Init or
-        not Dev_Motor0.Init or
-        not Dev_CheckFlag0.Init or
-        not Dev_CheckFlag1.Init or
-        not Dev_Analog0.Init or
-        not Dev_Analog1.Init or
-        not Dev_Lamp0.Init
+      if not Dev_Lamp0.Init (True) or
+        not Dev_Lamp1.Init (True) or
+        not Dev_Lamp2.Init (True) or
+        not Dev_Motor0.Init (True) or
+        not Dev_CheckFlag0.Init (True)or
+        not Dev_CheckFlag1.Init (True) or
+        not Dev_Analog0.Init (True) or
+        not Dev_Analog1.Init (True) or
+        not Dev_Lamp0.Init (True)
       then
          Text_IO.Put_Line
            ("There was an error while initializing the devices.");

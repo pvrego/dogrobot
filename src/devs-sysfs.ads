@@ -130,7 +130,7 @@ package DEVS.SYSFS is
       Class : Class_Type;
    end record;
 
-   function Init (This : GPIO_Type; Forced : Boolean := False) return Boolean;
+   function Init (This : GPIO_Type; Forced : Boolean) return Boolean;
 
    function DeInit (This : GPIO_Type) return Boolean;
 
