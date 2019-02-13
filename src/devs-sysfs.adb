@@ -47,6 +47,14 @@ package body DEVS.SYSFS is
       end if;
    end Init;
 
+   procedure DeInit
+     (This : GPIO_Type)
+   is
+   begin
+      This.Unexport;
+      Assigned_GPIO (TO_GPIO (This.Pin)) := False;
+   end DeInit;
+
    ------------
    -- Export --
    ------------
@@ -140,15 +148,15 @@ package body DEVS.SYSFS is
 
    procedure DeInit_Devices is
    begin
-      Dev_Lamp0.Unexport;
-      Dev_Lamp1.Unexport;
-      Dev_Lamp2.Unexport;
-      Dev_Motor0.Unexport;
-      Dev_CheckFlag0.Unexport;
-      Dev_CheckFlag1.Unexport;
-      Dev_Analog0.Unexport;
-      Dev_Analog1.Unexport;
-      Dev_Lamp0.Unexport;
+      Dev_Lamp0.DeInit;
+      Dev_Lamp1.DeInit;
+      Dev_Lamp2.DeInit;
+      Dev_Motor0.DeInit;
+      Dev_CheckFlag0.DeInit;
+      Dev_CheckFlag1.DeInit;
+      Dev_Analog0.DeInit;
+      Dev_Analog1.DeInit;
+      Dev_Lamp0.DeInit;
    end DeInit_Devices;
 
    procedure Test_File_Handling is

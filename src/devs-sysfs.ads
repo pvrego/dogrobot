@@ -135,6 +135,9 @@ package DEVS.SYSFS is
       Forced : Boolean := False)
       return Boolean;
 
+   procedure DeInit
+     (This : GPIO_Type);
+
    GPIO_BASE_PATH : constant String := "/sys/class/gpio";
 
    type Direction_Type is
