@@ -1,6 +1,7 @@
 with COMM;
 with COMM.SOCKETS;
 with CORE.BUFFER;
+with DEVS.SYSFS;
 
 -- =============================================================================
 -- Implements the DogRobot main application in Raspberry Pi and Windows.
@@ -24,6 +25,9 @@ begin
    begin
       Success := CORE.BUFFER.Put (Command);
    end;
+
+#elsif Module = "MOD_RPI" then
+   DEVS.SYSFS.Init_Devices;
 #end if;
 
    COMM.SOCKETS.Socket_Manager.Start;
