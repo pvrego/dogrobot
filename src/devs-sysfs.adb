@@ -92,12 +92,9 @@ package body DEVS.SYSFS is
 
       if Forced and then This.Unexport then null; end if;
 
-      Text_IO.Put_Line ("## Exporting "&Full_Name&"["&Cmd&"]");
       Text_IO.Open (Curr_File, Text_IO.Out_File, Full_Name);
       Text_IO.Put_Line (Curr_File, Cmd);
       Text_IO.Close (Curr_File);
-      Text_IO.Put_Line ("## Exported "&Full_Name&"["&Cmd&"] successfully.");
-
       return True;
 
    exception
@@ -116,11 +113,9 @@ package body DEVS.SYSFS is
       Cmd : constant String :=
         Format (GPIO_Number_Type'Image (TO_GPIO_NUMBER (TO_GPIO (This.Pin))));
    begin
-      Text_IO.Put_Line ("## Unexporting "&Full_Name&"["&Cmd&"]");
       Text_IO.Open (Curr_File, Text_IO.Out_File, Full_Name);
       Text_IO.Put_Line (Curr_File, Cmd);
       Text_IO.Close (Curr_File);
-      Text_IO.Put_Line ("## Unexported "&Full_Name&"["&Cmd&"] successfully.");
       return True;
    exception
       when The_Error : others =>
@@ -135,14 +130,12 @@ package body DEVS.SYSFS is
         & "/direction";
       Curr_File : Text_IO.File_Type;
    begin
-      Text_IO.Put_Line ("## Setting direction of "&Full_Name);
       Text_IO.Open (Curr_File, Text_IO.Out_File, Full_Name);
       case Direction is
          when GPIO_IN  => Text_IO.Put (Curr_File, "in");
          when GPIO_OUT => Text_IO.Put (Curr_File, "out");
       end case;
       Text_IO.Close (Curr_File);
-      Text_IO.Put_Line ("## Direction of "&Full_Name&" is set successfully.");
 
       return True;
    exception
