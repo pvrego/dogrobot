@@ -231,7 +231,8 @@ package body DEVS.SYSFS is
    procedure Test_Lamps_012 is
       Delay_Time : constant Duration := 0.01;
    begin
-      for Index in Integer range 1 .. 20 loop
+      --        for Index in Integer range 1 .. 20
+      loop
          if (Dev_Lamp0.Set_State (ON)) then Text_IO.Put ("^"); end if;
          delay Delay_Time;
          if (Dev_Lamp0.Set_State (OFF)) then Text_IO.Put ("~"); end if;
