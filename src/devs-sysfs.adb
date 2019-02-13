@@ -107,9 +107,13 @@ package body DEVS.SYSFS is
         & "/value";
       Curr_File : Text_IO.File_Type;
    begin
-      Text_IO.Open (Curr_File, Text_IO.Out_File, Full_Name);
-      Text_IO.Put_Line (Curr_File, Integer'Image (Value));
-      Text_IO.Close (Curr_File);
+      if Assigned_GPIO (TO_GPIO (This.Pin)) then
+         Text_IO.Open (Curr_File, Text_IO.Out_File, Full_Name);
+         Text_IO.Put_Line (Curr_File, Integer'Image (Value));
+         Text_IO.Close (Curr_File);
+      else
+         Text_IO.Put_Line ("Gpio value set error.");
+      end if;
    end Set_Value;
 
    function Get_Value (This : GPIO_Type) return Integer is
@@ -118,11 +122,16 @@ package body DEVS.SYSFS is
         GPIO_Number_Type'Image (TO_GPIO_NUMBER (TO_GPIO (This.Pin)))
         & "/value";
       Curr_File : Text_IO.File_Type;
-      Value : Integer;
+      Value : Integer := 0;
    begin
-      Text_IO.Open (Curr_File, Text_IO.In_File, Full_Name);
-      Value := Integer'Value (Text_IO.Get_Line (Curr_File));
-      Text_IO.Close (Curr_File);
+      if Assigned_GPIO (TO_GPIO (This.Pin)) then
+         Text_IO.Open (Curr_File, Text_IO.In_File, Full_Name);
+         Value := Integer'Value (Text_IO.Get_Line (Curr_File));
+         Text_IO.Close (Curr_File);
+      else
+         Text_IO.Put_Line ("Gpio value get error.");
+      end if;
+
       return Value;
    end Get_Value;
 
