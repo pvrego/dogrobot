@@ -26,14 +26,14 @@ package body DEVS.SYSFS is
          case This.Class is
             when DIGITAL_OUT =>
                -- Handle device initialization
-               if This.Export (Forced) and This.Set_Direction (GPIO_OUT) then
+               if This.Export (Forced) and then This.Set_Direction (GPIO_OUT) then
                   Text_IO.Put_Line
                     ("## "&Gpio_Str&" exported as "
                      &Class_Type'Image (This.Class)&" successfully.");
                end if;
             when DIGITAL_IN =>
                -- Handle device initialization
-               if This.Export (Forced) and This.Set_Direction (GPIO_IN) then
+               if This.Export (Forced) and then This.Set_Direction (GPIO_IN) then
                   Text_IO.Put_Line
                     ("## "&Gpio_Str&" exported as "
                      &Class_Type'Image (This.Class)&" successfully.");
