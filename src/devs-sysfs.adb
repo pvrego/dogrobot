@@ -64,7 +64,7 @@ package body DEVS.SYSFS is
 
    function DeInit
      (This : GPIO_Type)
-     return Boolean
+      return Boolean
    is
    begin
       if Assigned_GPIO (TO_GPIO (This.Pin)) and This.Unexport then
@@ -200,12 +200,11 @@ package body DEVS.SYSFS is
       if not Dev_Lamp0.Init (True) or
         not Dev_Lamp1.Init (True) or
         not Dev_Lamp2.Init (True) or
---          not Dev_Motor0.Init (True) or
+        --          not Dev_Motor0.Init (True) or
+        --          not Dev_Analog0.Init (True) or
+        --          not Dev_Analog1.Init (True)
         not Dev_CheckFlag0.Init (True)or
-        not Dev_CheckFlag1.Init (True) or
---          not Dev_Analog0.Init (True) or
---          not Dev_Analog1.Init (True) or
-        not Dev_Lamp0.Init (True)
+        not Dev_CheckFlag1.Init (True)
       then
          Text_IO.Put_Line
            ("There was an error while initializing the devices.");
