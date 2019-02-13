@@ -138,6 +138,8 @@ package DEVS.SYSFS is
    procedure Init_Devices;
    procedure DeInit_Devices;
 
+   procedure Test_File_Handling;
+
 private
 
    -- ==========================================================================

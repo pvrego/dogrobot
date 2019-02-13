@@ -81,4 +81,13 @@ package body DEVS.SYSFS is
       null;
    end DeInit_Devices;
 
+   procedure Test_File_Handling is
+      File_In : Text_IO.File_Type;
+      File_Path : String := "./home/pi/test_file";
+   begin
+      Text_IO.Open (File => File_In,
+                    Mode => Text_IO.In_File,
+                    Name => File_Path);
+      Text_IO.Put (File_In, "5");
+   end Test_File_Handling;
 end DEVS.SYSFS;

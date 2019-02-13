@@ -28,6 +28,7 @@ begin
 
 #elsif Module = "MOD_RPI" then
    DEVS.SYSFS.Init_Devices;
+   DEVS.SYSFS.Test_File_Handling;
 #end if;
 
    COMM.SOCKETS.Socket_Manager.Start;
