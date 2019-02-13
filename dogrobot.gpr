@@ -25,7 +25,7 @@ project DOGROBOT is
 
    package Compiler is
       for Switches ("ada") use ("-g", "-gnatf", "-gnateDModule=" & Module,
-                                "-gnateDPrivate_Warnings=" & Private_Warnings);
+                                "-gnateDPrivate_Warnings=" & Private_Warnings, "-gnat12");
    end Compiler;
 
    package Linker is
