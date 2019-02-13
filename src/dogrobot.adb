@@ -32,7 +32,9 @@ begin
    end;
 
 #elsif Module = "MOD_RPI" then
-   DEVS.SYSFS.Init_Devices;
+   --     DEVS.SYSFS.Init_Devices;
+   DEVS.SYSFS.DeInit_Devices;
+
 #end if;
 
    COMM.SOCKETS.Socket_Manager.Start;
