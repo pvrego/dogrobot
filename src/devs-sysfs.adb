@@ -93,7 +93,7 @@ package body DEVS.SYSFS is
    procedure Set_Direction (This : GPIO_Type; Direction : Direction_Type) is
       Full_Name : constant String :=
         GPIO_BASE_PATH & "/gpio" &
-        GPIO_Number_Type'Image (TO_GPIO_NUMBER (TO_GPIO (This.Pin)))
+        Format (GPIO_Number_Type'Image (TO_GPIO_NUMBER (TO_GPIO (This.Pin))))
         & "/direction";
       Curr_File : Text_IO.File_Type;
    begin
@@ -109,13 +109,13 @@ package body DEVS.SYSFS is
    procedure Set_Value (This : GPIO_Type; Value : Integer) is
       Full_Name : constant String :=
         GPIO_BASE_PATH & "/gpio" &
-        GPIO_Number_Type'Image (TO_GPIO_NUMBER (TO_GPIO (This.Pin)))
+        Format (GPIO_Number_Type'Image (TO_GPIO_NUMBER (TO_GPIO (This.Pin))))
         & "/value";
       Curr_File : Text_IO.File_Type;
    begin
       if Assigned_GPIO (TO_GPIO (This.Pin)) then
          Text_IO.Open (Curr_File, Text_IO.Out_File, Full_Name);
-         Text_IO.Put_Line (Curr_File, Integer'Image (Value));
+         Text_IO.Put_Line (Curr_File, Format (Integer'Image (Value)));
          Text_IO.Close (Curr_File);
       else
          Text_IO.Put_Line ("Gpio value set error.");
@@ -125,7 +125,7 @@ package body DEVS.SYSFS is
    function Get_Value (This : GPIO_Type) return Integer is
       Full_Name : constant String :=
         GPIO_BASE_PATH & "/gpio" &
-        GPIO_Number_Type'Image (TO_GPIO_NUMBER (TO_GPIO (This.Pin)))
+        Format (GPIO_Number_Type'Image (TO_GPIO_NUMBER (TO_GPIO (This.Pin))))
         & "/value";
       Curr_File : Text_IO.File_Type;
       Value : Integer := 0;
