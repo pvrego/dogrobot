@@ -25,107 +25,75 @@ package DEVS.SYSFS is
 
    type Descriptor_Type is
      (NONE,
-      GPIO2,
-      GPIO3,
-      GPIO4,
-      GPIO5,
-      GPIO6,
-      GPIO7,
-      GPIO8,
-      GPIO9,
-      GPIO10,
-      GPIO11,
-      GPIO12_PWM,
-      GPIO13_PWM,
-      GPIO14,
-      GPIO15,
-      GPIO16,
-      GPIO17,
-      GPIO18_PWM,
-      GPIO19,
-      GPIO20,
+      GPIO0_I2C0_SDA,
+      GPIO1_I2C0_SCL,
+      GPIO4_GP_CLK0,
+      GPIO14_UART0_TX,
+      GPIO15_UART0_RX,
+      GPI17,
+      GPI18_PWM0,
       GPIO21,
       GPIO22,
       GPIO23,
       GPIO24,
       GPIO25,
-      GPIO26,
-      GPIO27_PWM,
-      ID_SD,
-      ID_SC);
+      GPIO10_SPI_MOSI,
+      GPIO9_SPI_MISO,
+      GPI25,
+      GPIO11_SPI_SCLK,
+      GPIO8_SPI_CS0,
+      GPIO7_SPI_SC1);
 
-   type Pin_Type is new Integer range 1 .. 40;
+   type Pin_Type is new Integer range 1 .. 26;
 
+   -- https://raspberry-projects.com/pi/pi-hardware/raspberry-pi-model-b/model-b-io-pins
    PIN_DESCRIPTOR : constant array (Pin_Type) of Descriptor_Type :=
-     (03     => GPIO2,
-      05     => GPIO3,
-      07     => GPIO4,
-      08     => GPIO14,
-      10     => GPIO15,
-      11     => GPIO17,
-      12     => GPIO18_PWM,
-      13     => GPIO27_PWM,
+     (-- P1 Header
+     03      => GPIO0_I2C0_SDA,
+      05     => GPIO1_I2C0_SCL,
+      07     => GPIO4_GP_CLK0,
+      08     => GPIO14_UART0_TX,
+      10     => GPIO15_UART0_RX,
+      11     => GPI17,
+      12     => GPI18_PWM0,
+      13     => GPIO21,
       15     => GPIO22,
       16     => GPIO23,
       18     => GPIO24,
-      19     => GPIO10,
-      21     => GPIO9,
+      19     => GPIO10_SPI_MOSI,
+      21     => GPIO9_SPI_MISO,
       22     => GPIO25,
-      23     => GPIO11,
-      24     => GPIO8,
-      26     => GPIO7,
-      27     => ID_SD,
-      28     => ID_SC,
-      29     => GPIO5,
-      31     => GPIO6,
-      32     => GPIO12_PWM,
-      33     => GPIO13_PWM,
-      35     => GPIO19,
-      36     => GPIO16,
-      37     => GPIO26,
-      38     => GPIO20,
-      40     => GPIO21,
+      23     => GPIO11_SPI_SCLK,
+      24     => GPIO8_SPI_CS0,
+      26     => GPIO7_SPI_SC1,
       others => NONE);
 
    DESCRIPTOR_PIN : constant array (Descriptor_Type) of Pin_Type :=
-     (GPIO10     => 19,
-      GPIO11     => 23,
-      GPIO12_PWM => 32,
-      GPIO13_PWM => 33,
-      GPIO14     => 08,
-      GPIO15     => 10,
-      GPIO16     => 36,
-      GPIO17     => 11,
-      GPIO18_PWM => 12,
-      GPIO19     => 35,
-      GPIO2      => 03,
-      GPIO20     => 38,
-      GPIO21     => 40,
-      GPIO22     => 15,
-      GPIO23     => 16,
-      GPIO24     => 18,
-      GPIO25     => 22,
-      GPIO26     => 37,
-      GPIO27_PWM => 13,
-      GPIO3      => 05,
-      GPIO4      => 07,
-      GPIO5      => 29,
-      GPIO6      => 31,
-      GPIO7      => 26,
-      GPIO8      => 24,
-      GPIO9      => 21,
-      ID_SC      => 28,
-      ID_SD      => 27,
-      NONE       => 1);
+     (GPIO0_I2C0_SDA  => 03,
+      GPIO1_I2C0_SCL  => 05,
+      GPIO4_GP_CLK0   => 07,
+      GPIO14_UART0_TX => 08,
+      GPIO15_UART0_RX => 10,
+      GPI17           => 11,
+      GPI18_PWM0      => 12,
+      GPIO21          => 13,
+      GPIO22          => 15,
+      GPIO23          => 16,
+      GPIO24          => 18,
+      GPIO10_SPI_MOSI => 19,
+      GPIO9_SPI_MISO  => 21,
+      GPIO25          => 22,
+      GPIO11_SPI_SCLK => 23,
+      GPIO8_SPI_CS0   => 24,
+      GPIO7_SPI_SC1   => 26,
+      others          => 1);
 
    type GPIO_Type is tagged record
       Pin   : Pin_Type;
       Class : Class_Type;
    end record;
 
-   function Init
-     (This  : GPIO_Type)
-      return Boolean;
+   function Init (This : GPIO_Type) return Boolean;
 
    procedure Export (This : GPIO_Type);
    procedure Unexport (This : GPIO_Type);
@@ -142,20 +110,13 @@ private
    Assigned_Descriptor : array (Descriptor_Type) of Boolean :=
      (others => False);
 
-   -- Digital output
-   Dev_Lamp0 : GPIO_Type := (Pin => 11, Class => DIGITAL_OUT);
-   Dev_Lamp1 : GPIO_Type := (Pin => 13, Class => DIGITAL_OUT);
-   Dev_Lamp2 : GPIO_Type := (Pin => 15, Class => DIGITAL_OUT);
-
-   -- PWM
-   Dev_Motor0 : GPIO_Type := (Pin => 32, Class => PWM);
-
-   -- Digital input
-   Dev_CheckFlag0 : GPIO_Type := (Pin => 16, Class => DIGITAL_IN);
-   Dev_CheckFlag1 : GPIO_Type := (Pin => 18, Class => DIGITAL_IN);
-
-   -- Analog input
-   Dev_Analog0 : GPIO_Type := (Pin => 36, Class => ANALOG_IN);
-   Dev_Analog1 : GPIO_Type := (Pin => 38, Class => ANALOG_IN);
+   Dev_Lamp0      : GPIO_Type := (Pin => 3, Class => DIGITAL_OUT);
+   Dev_Lamp1      : GPIO_Type := (Pin => 5, Class => DIGITAL_OUT);
+   Dev_Lamp2      : GPIO_Type := (Pin => 7, Class => DIGITAL_OUT);
+   Dev_Motor0     : GPIO_Type := (Pin => 12, Class => PWM);
+   Dev_CheckFlag0 : GPIO_Type := (Pin => 13, Class => DIGITAL_IN);
+   Dev_CheckFlag1 : GPIO_Type := (Pin => 15, Class => DIGITAL_IN);
+   Dev_Analog0    : GPIO_Type := (Pin => 16, Class => ANALOG_IN);
+   Dev_Analog1    : GPIO_Type := (Pin => 18, Class => ANALOG_IN);
 
 end DEVS.SYSFS;
