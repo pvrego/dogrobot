@@ -96,9 +96,10 @@ package body DEVS.SYSFS is
       Text_IO.Open (File => File_In,
                     Mode => Text_IO.In_File,
                     Name => File_Path);
+      Text_IO.Put_Line ("File will be written.");
       Text_IO.Put (File_In, "5");
       Text_IO.Put_Line (File_Path & "is written.");
       Text_IO.Close (File_In);
-
+      Text_IO.Put_Line (File_Path & "is closed.");
    end Test_File_Handling;
 end DEVS.SYSFS;
