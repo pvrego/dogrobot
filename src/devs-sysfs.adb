@@ -62,6 +62,8 @@ package body DEVS.SYSFS is
    procedure Export (This : GPIO_Type) is
       Full_Name : constant String := GPIO_BASE_PATH & "/export";
       Curr_File : Text_IO.File_Type;
+      Cmd : String :=
+        GPIO_Number_Type'Image (TO_GPIO_NUMBER (TO_GPIO (This.Pin)));
    begin
       Text_IO.Put_Line ("## Exporting file <"&Full_Name&">");
       Text_IO.Open (Curr_File, Text_IO.Out_File, Full_Name);
@@ -93,6 +95,7 @@ package body DEVS.SYSFS is
         & "/direction";
       Curr_File : Text_IO.File_Type;
    begin
+      Text_IO.Put_Line ("## Setting direction of <"&Full_Name&">");
       Text_IO.Open (Curr_File, Text_IO.Out_File, Full_Name);
       case Direction is
          when GPIO_IN  => Text_IO.Put_Line (Curr_File, "in");
