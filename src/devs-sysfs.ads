@@ -11,7 +11,7 @@ package DEVS.SYSFS is
    procedure Init_Devices (Forced : Boolean := False);
    procedure DeInit_Devices;
 
-
+   procedure Test_Lamps_012;
 
 private
 
@@ -130,10 +130,17 @@ private
 
    type Direction_Type is (GPIO_IN, GPIO_OUT);
 
+   type State_Type is
+     (OFF,
+      ON);
+   for State_Type use
+     (OFF => 0,
+      ON  => 1);
+
    function Export (This : GPIO_Type; Forced : Boolean) return Boolean;
    function Unexport (This : GPIO_Type) return Boolean;
    function Set_Direction (This : GPIO_Type; Direction : Direction_Type) return Boolean;
-   function Set_Value (This : GPIO_Type; Value : Integer) return Boolean;
+   function Set_State (This : GPIO_Type; State : State_Type) return Boolean;
    function Get_Value (This : GPIO_Type) return Integer;
 
    -- ==========================================================================

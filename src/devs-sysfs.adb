@@ -144,7 +144,7 @@ package body DEVS.SYSFS is
          return False;
    end Set_Direction;
 
-   function Set_Value (This : GPIO_Type; Value : Integer) return Boolean is
+   function Set_State (This : GPIO_Type; State : State_Type) return Boolean is
       Full_Name : constant String :=
         GPIO_BASE_PATH & "/gpio" &
         Format (GPIO_Number_Type'Image (TO_GPIO_NUMBER (TO_GPIO (This.Pin))))
@@ -154,7 +154,7 @@ package body DEVS.SYSFS is
       if Assigned_GPIO (TO_GPIO (This.Pin)) then
          Text_IO.Put_Line ("#devs# Setting value of "&Full_Name);
          Text_IO.Open (Curr_File, Text_IO.Out_File, Full_Name);
-         Text_IO.Put_Line (Curr_File, Format (Integer'Image (Value)));
+         Text_IO.Put_Line (Curr_File, Format (Integer'Image (State_Type'Pos (State))));
          Text_IO.Close (Curr_File);
          Text_IO.Put_Line ("#devs# Value of "&Full_Name&" is set successfully.");
          return True;
@@ -167,7 +167,7 @@ package body DEVS.SYSFS is
       when The_Error : others =>
          Text_IO.Put_Line("!!! "&Ada.Exceptions.Exception_Information (The_Error));
          return False;
-   end Set_Value;
+   end Set_State;
 
    function Get_Value (This : GPIO_Type) return Integer is
       Full_Name : constant String :=
@@ -229,5 +229,15 @@ package body DEVS.SYSFS is
          Text_IO.Put_Line ("#devs# All devices uninitialized successfully.");
       end if;
    end DeInit_Devices;
+
+   procedure Test_Lamps_012 is
+   begin
+      for Index in Integer range 1 .. 20 loop
+         if (Dev_Lamp0.Set_State (ON)) then Text_IO.Put ("^"); end if;
+         delay 0.1;
+         if (Dev_Lamp0.Set_State (OFF)) then Text_IO.Put ("~"); end if;
+         delay 0.1;
+      end loop;
+   end Test_Lamps_012;
 
 end DEVS.SYSFS;

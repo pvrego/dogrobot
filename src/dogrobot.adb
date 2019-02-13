@@ -34,6 +34,8 @@ begin
 #elsif Module = "MOD_RPI" then
    DEVS.SYSFS.Init_Devices;
    --     DEVS.SYSFS.DeInit_Devices;
+   DEVS.SYSFS.Test_Lamps_012;
+
 #end if;
 
    COMM.SOCKETS.Socket_Manager.Start;
