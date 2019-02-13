@@ -28,14 +28,14 @@ package body DEVS.SYSFS is
                -- Handle device initialization
                if This.Export (Forced) and then This.Set_Direction (GPIO_OUT) then
                   Text_IO.Put_Line
-                    ("## "&Gpio_Str&" exported as "
+                    ("#devs# "&Gpio_Str&" exported as "
                      &Class_Type'Image (This.Class)&" successfully.");
                end if;
             when DIGITAL_IN =>
                -- Handle device initialization
                if This.Export (Forced) and then This.Set_Direction (GPIO_IN) then
                   Text_IO.Put_Line
-                    ("## "&Gpio_Str&" exported as "
+                    ("#devs# "&Gpio_Str&" exported as "
                      &Class_Type'Image (This.Class)&" successfully.");
                end if;
 
@@ -152,11 +152,11 @@ package body DEVS.SYSFS is
       Curr_File : Text_IO.File_Type;
    begin
       if Assigned_GPIO (TO_GPIO (This.Pin)) then
-         Text_IO.Put_Line ("## Setting value of "&Full_Name);
+         Text_IO.Put_Line ("#devs# Setting value of "&Full_Name);
          Text_IO.Open (Curr_File, Text_IO.Out_File, Full_Name);
          Text_IO.Put_Line (Curr_File, Format (Integer'Image (Value)));
          Text_IO.Close (Curr_File);
-         Text_IO.Put_Line ("## Value of "&Full_Name&" is set successfully.");
+         Text_IO.Put_Line ("#devs# Value of "&Full_Name&" is set successfully.");
          return True;
       else
          Text_IO.Put_Line ("Gpio value set error.");
@@ -200,17 +200,17 @@ package body DEVS.SYSFS is
       if not Dev_Lamp0.Init (True) or
         not Dev_Lamp1.Init (True) or
         not Dev_Lamp2.Init (True) or
-        not Dev_Motor0.Init (True) or
+--          not Dev_Motor0.Init (True) or
         not Dev_CheckFlag0.Init (True)or
         not Dev_CheckFlag1.Init (True) or
-        not Dev_Analog0.Init (True) or
-        not Dev_Analog1.Init (True) or
+--          not Dev_Analog0.Init (True) or
+--          not Dev_Analog1.Init (True) or
         not Dev_Lamp0.Init (True)
       then
          Text_IO.Put_Line
            ("There was an error while initializing the devices.");
       else
-         Text_IO.Put_Line ("## Devices initialized successfully.");
+         Text_IO.Put_Line ("#devs# Devices initialized successfully.");
       end if;
 
    end Init_Devices;
@@ -227,7 +227,7 @@ package body DEVS.SYSFS is
         Dev_Analog1.DeInit and
         Dev_Lamp0.DeInit
       then
-         Text_IO.Put_Line ("## All devices uninitialized successfully.");
+         Text_IO.Put_Line ("#devs# All devices uninitialized successfully.");
       end if;
    end DeInit_Devices;
 
