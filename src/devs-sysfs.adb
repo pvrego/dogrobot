@@ -23,10 +23,6 @@ package body DEVS.SYSFS is
             when DIGITAL_OUT =>
                -- Handle device initialization
                This.Export (Forced);
-               Text_IO.Put_Line
-                 ("## Setting direction of "&
-                    GPIO_Descriptor_Type'Image (TO_GPIO (This.Pin))& " to " &
-                    Direction_Type'Image (GPIO_OUT));
                This.Set_Direction (GPIO_OUT);
 
             when DIGITAL_IN =>
@@ -78,10 +74,11 @@ package body DEVS.SYSFS is
 
       if Forced then This.Unexport; end if;
 
-      Text_IO.Put_Line ("## Exporting <"&Full_Name&"> :="&"<"&Cmd&">");
+      Text_IO.Put_Line ("## Exporting "&Full_Name&"["&Cmd&"]");
       Text_IO.Open (Curr_File, Text_IO.Out_File, Full_Name);
       Text_IO.Put_Line (Curr_File, Cmd);
       Text_IO.Close (Curr_File);
+      Text_IO.Put_Line ("## Exportated "&Full_Name&"["&Cmd&"] successfully.");
 
    exception
       when The_Error : others =>
@@ -98,9 +95,11 @@ package body DEVS.SYSFS is
       Cmd : constant String :=
         Format (GPIO_Number_Type'Image (TO_GPIO_NUMBER (TO_GPIO (This.Pin))));
    begin
+      Text_IO.Put_Line ("## Unexporting "&Full_Name&"["&Cmd&"]");
       Text_IO.Open (Curr_File, Text_IO.Out_File, Full_Name);
       Text_IO.Put_Line (Curr_File, Cmd);
       Text_IO.Close (Curr_File);
+      Text_IO.Put_Line ("## Unexported "&Full_Name&"["&Cmd&"] successfully.");
    exception
       when The_Error : others =>
          Text_IO.Put_Line("!!! "&Ada.Exceptions.Exception_Information (The_Error));
@@ -113,13 +112,14 @@ package body DEVS.SYSFS is
         & "/direction";
       Curr_File : Text_IO.File_Type;
    begin
-      Text_IO.Put_Line ("## Setting direction of <"&Full_Name&">");
-      Text_IO.Open (Curr_File, Text_IO.Append_File, Full_Name);
+      Text_IO.Put_Line ("## Setting direction of "&Full_Name);
+      Text_IO.Open (Curr_File, Text_IO.Out_File, Full_Name);
       case Direction is
          when GPIO_IN  => Text_IO.Put (Curr_File, "in");
          when GPIO_OUT => Text_IO.Put (Curr_File, "out");
       end case;
       Text_IO.Close (Curr_File);
+      Text_IO.Put_Line ("## Direction of "&Full_Name&" is set successfully.");
 
    exception
       when The_Error : others =>
@@ -134,9 +134,11 @@ package body DEVS.SYSFS is
       Curr_File : Text_IO.File_Type;
    begin
       if Assigned_GPIO (TO_GPIO (This.Pin)) then
+         Text_IO.Put_Line ("## Setting value of "&Full_Name);
          Text_IO.Open (Curr_File, Text_IO.Out_File, Full_Name);
          Text_IO.Put_Line (Curr_File, Format (Integer'Image (Value)));
          Text_IO.Close (Curr_File);
+         Text_IO.Put_Line ("## Value of "&Full_Name&" is set successfully.");
       else
          Text_IO.Put_Line ("Gpio value set error.");
       end if;
