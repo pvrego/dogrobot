@@ -90,7 +90,7 @@ package body DEVS.SYSFS is
 
    procedure Test_File_Handling is
       File_In : Text_IO.File_Type;
-      File_Path : String := "./home/pi/test_file";
+      File_Path : String := "/home/pi/test_file";
    begin
       Text_IO.Put_Line ("File will open.");
       Text_IO.Open (File => File_In,
