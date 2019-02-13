@@ -11,7 +11,7 @@ package DEVS.SYSFS is
    procedure Init_Devices (Forced : Boolean := False);
    procedure DeInit_Devices;
 
-   procedure Test_File_Handling;
+
 
 private
 
