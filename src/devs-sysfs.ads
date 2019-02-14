@@ -1,21 +1,18 @@
-with Ada.Strings.Fixed;
+with DEVS.SYSFS_TYPES; use DEVS.SYSFS_TYPES;
 
 -- =============================================================================
 -- Responsible for SYSFS setups and management.
 -- =============================================================================
 package DEVS.SYSFS is
 
-   -- Para usar o wiringpi (e portanto o command-line gpio), instalar via apt-get
-   --   sudo apt-get install wiringpi
+   -- ==========================================================================
+   -- General Definitions of Types and Constants
+   -- ==========================================================================
 
-   procedure Init_Devices (Forced : Boolean := False);
-   procedure DeInit_Devices;
+      GPIO_BASE_PATH : constant String := "/sys/class/gpio";
 
-   procedure Test_Lamps_012;
-
-private
-
-   type Class_Type is (DIGITAL_OUT, DIGITAL_IN, ANALOG_IN, PWM);
+   type Class_Type is
+     (DIGITAL_OUT, DIGITAL_IN, ANALOG_IN, PWM);
 
    type GPIO_Descriptor_Type is
      (GPIO_00_I2C0_SDA,
@@ -117,17 +114,6 @@ private
       GPIO_08_SPI_CS0  => PIN_24,
       GPIO_07_SPI_SC1  => PIN_26);
 
-   type GPIO_Type is tagged record
-      Pin   : Pin_Type;
-      Class : Class_Type;
-   end record;
-
-   function Init (This : GPIO_Type; Forced : Boolean) return Boolean;
-
-   function DeInit (This : GPIO_Type) return Boolean;
-
-   GPIO_BASE_PATH : constant String := "/sys/class/gpio";
-
    type Direction_Type is (GPIO_IN, GPIO_OUT);
 
    type State_Type is
@@ -137,11 +123,52 @@ private
      (OFF => 0,
       ON  => 1);
 
-   function Export (This : GPIO_Type; Forced : Boolean) return Boolean;
-   function Unexport (This : GPIO_Type) return Boolean;
-   function Set_Direction (This : GPIO_Type; Direction : Direction_Type) return Boolean;
-   function Set_State (This : GPIO_Type; State : State_Type) return Boolean;
-   function Get_Value (This : GPIO_Type) return Integer;
+   -- ==========================================================================
+   -- Public Services
+   -- ==========================================================================
+
+   -- Para usar o wiringpi (e portanto o command-line gpio), instalar via apt-get
+   --   sudo apt-get install wiringpi
+
+   procedure Init_Devices (Forced : Boolean := False);
+   procedure DeInit_Devices;
+
+   procedure Test_Lamps_012;
+
+   -- ==========================================================================
+   -- Define public interface for Device_Types
+   -- ==========================================================================
+   type Public_Device_Type is abstract tagged null record;
+   function Init
+     (This : Public_Device_Type; Forced : Boolean) return Boolean is abstract;
+   function DeInit
+     (This : Public_Device_Type) return Boolean is abstract;
+   function Set_State
+     (This : Public_Device_Type; State : State_Type) return Boolean is abstract;
+   function Get_Value
+     (This : Public_Device_Type) return Integer is abstract;
+
+   -- ==========================================================================
+   -- Define complete class for Device_Types
+   -- ==========================================================================
+   type Device_Type is new Public_Device_Type with private;
+
+private
+
+   type Device_Type is new Public_Device_Type with record
+      Pin   : Pin_Type;
+      Class : Class_Type;
+   end record;
+
+   overriding function Init (This : Device_Type; Forced : Boolean) return Boolean;
+   overriding function DeInit (This : Device_Type) return Boolean;
+
+   function Export (This : Device_Type; Forced : Boolean) return Boolean;
+   function Unexport (This : Device_Type) return Boolean;
+   function Set_Direction (This : Device_Type; Direction : Direction_Type) return Boolean;
+
+   overriding function Set_State (This : Device_Type; State : State_Type) return Boolean;
+   overriding function Get_Value (This : Device_Type) return Integer;
 
    -- ==========================================================================
    -- Devices in use
@@ -150,16 +177,13 @@ private
    Assigned_GPIO : array (GPIO_Descriptor_Type) of Boolean :=
      (others => False);
 
-   Dev_Lamp0      : GPIO_Type := (Pin => PIN_03, Class => DIGITAL_OUT);
-   Dev_Lamp1      : GPIO_Type := (Pin => PIN_05, Class => DIGITAL_OUT);
-   Dev_Lamp2      : GPIO_Type := (Pin => PIN_07, Class => DIGITAL_OUT);
-   Dev_Motor0     : GPIO_Type := (Pin => PIN_12, Class => PWM);
-   Dev_CheckFlag0 : GPIO_Type := (Pin => PIN_13, Class => DIGITAL_IN);
-   Dev_CheckFlag1 : GPIO_Type := (Pin => PIN_15, Class => DIGITAL_IN);
-   Dev_Analog0    : GPIO_Type := (Pin => PIN_16, Class => ANALOG_IN);
-   Dev_Analog1    : GPIO_Type := (Pin => PIN_18, Class => ANALOG_IN);
+   Dev_Lamp0      : Device_Type := (Pin => PIN_03, Class => DIGITAL_OUT);
+   Dev_Lamp1      : Device_Type := (Pin => PIN_05, Class => DIGITAL_OUT);
+   Dev_Lamp2      : Device_Type := (Pin => PIN_07, Class => DIGITAL_OUT);
+   Dev_Motor0     : Device_Type := (Pin => PIN_12, Class => PWM);
+   Dev_CheckFlag0 : Device_Type := (Pin => PIN_13, Class => DIGITAL_IN);
+   Dev_CheckFlag1 : Device_Type := (Pin => PIN_15, Class => DIGITAL_IN);
+   Dev_Analog0    : Device_Type := (Pin => PIN_16, Class => ANALOG_IN);
+   Dev_Analog1    : Device_Type := (Pin => PIN_18, Class => ANALOG_IN);
 
-   function Format
-     (Number_Text : String) return String is
-     (Ada.Strings.Fixed.Trim (Number_Text, Ada.Strings.Left));
 end DEVS.SYSFS;

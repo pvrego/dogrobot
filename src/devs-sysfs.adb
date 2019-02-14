@@ -1,5 +1,6 @@
 with Text_IO;
 with Ada.Exceptions;
+with UTILS; use UTILS;
 
 package body DEVS.SYSFS is
 
@@ -8,7 +9,7 @@ package body DEVS.SYSFS is
    ----------
 
    function Init
-     (This : GPIO_Type;
+     (This : Device_Type;
       Forced : Boolean)
       return Boolean
    is
@@ -63,7 +64,7 @@ package body DEVS.SYSFS is
    end Init;
 
    function DeInit
-     (This : GPIO_Type)
+     (This : Device_Type)
       return Boolean
    is
    begin
@@ -83,11 +84,12 @@ package body DEVS.SYSFS is
    -- Export --
    ------------
 
-   function Export (This : GPIO_Type; Forced : Boolean) return Boolean is
+   function Export (This : Device_Type; Forced : Boolean) return Boolean is
       Full_Name : constant String := GPIO_BASE_PATH & "/export";
       Curr_File : Text_IO.File_Type;
       Cmd : constant String :=
         Format (GPIO_Number_Type'Image (TO_GPIO_NUMBER (TO_GPIO (This.Pin))));
+
    begin
 
       if Forced and then This.Unexport then null; end if;
@@ -107,7 +109,7 @@ package body DEVS.SYSFS is
    -- Unexport --
    --------------
 
-   function Unexport (This : GPIO_Type) return Boolean is
+   function Unexport (This : Device_Type) return Boolean is
       Full_Name : constant String := GPIO_BASE_PATH & "/unexport";
       Curr_File : Text_IO.File_Type;
       Cmd : constant String :=
@@ -123,7 +125,7 @@ package body DEVS.SYSFS is
          return False;
    end Unexport;
 
-   function Set_Direction (This : GPIO_Type; Direction : Direction_Type) return Boolean is
+   function Set_Direction (This : Device_Type; Direction : Direction_Type) return Boolean is
       Full_Name : constant String :=
         GPIO_BASE_PATH & "/gpio" &
         Format (GPIO_Number_Type'Image (TO_GPIO_NUMBER (TO_GPIO (This.Pin))))
@@ -144,7 +146,7 @@ package body DEVS.SYSFS is
          return False;
    end Set_Direction;
 
-   function Set_State (This : GPIO_Type; State : State_Type) return Boolean is
+   function Set_State (This : Device_Type; State : State_Type) return Boolean is
       Full_Name : constant String :=
         GPIO_BASE_PATH & "/gpio" &
         Format (GPIO_Number_Type'Image (TO_GPIO_NUMBER (TO_GPIO (This.Pin))))
@@ -167,7 +169,7 @@ package body DEVS.SYSFS is
          return False;
    end Set_State;
 
-   function Get_Value (This : GPIO_Type) return Integer is
+   function Get_Value (This : Device_Type) return Integer is
       Full_Name : constant String :=
         GPIO_BASE_PATH & "/gpio" &
         Format (GPIO_Number_Type'Image (TO_GPIO_NUMBER (TO_GPIO (This.Pin))))
