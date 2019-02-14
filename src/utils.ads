@@ -2,7 +2,7 @@ with Ada.Strings.Fixed;
 
 package UTILS is
 
-   procedure Test_File_Handling;
+
 
    function Format
      (Number_Text : String) return String is
