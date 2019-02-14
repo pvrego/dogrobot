@@ -1,12 +1,21 @@
 with COMM;
 with COMM.SOCKETS;
 with CORE.BUFFER;
+with DEVS.SYSFS.STATIC;
+with Text_IO;
+with Ada.Exceptions;
+with GNAT.Traceback.Symbolic;
+with TESTS;
 
 -- =============================================================================
 -- Implements the DogRobot main application in Raspberry Pi and Windows.
 -- =============================================================================
 procedure DOGROBOT is
+   package SYSFS renames DEVS.SYSFS.STATIC;
+
 begin
+
+   Text_IO.Put_Line ("============ DogRobot ============");
 
    COMM.SOCKETS.Socket_Manager.Init;
 
@@ -24,8 +33,18 @@ begin
    begin
       Success := CORE.BUFFER.Put (Command);
    end;
+
+#elsif Module = "MOD_RPI" then
+   SYSFS.Init_Devices;
+   --     DEVS.SYSFS.DeInit_Devices;
+   TESTS.Test_Lamps_012;
 #end if;
 
    COMM.SOCKETS.Socket_Manager.Start;
+
+exception
+   when The_Error : others =>
+      Text_IO.Put_Line("!!! "&Ada.Exceptions.Exception_Information (The_Error));
+      Text_Io.Put_Line ("Traceback => " & GNAT.Traceback.Symbolic.Symbolic_Traceback(The_Error));
 
 end DOGROBOT;

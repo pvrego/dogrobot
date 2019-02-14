@@ -8,7 +8,7 @@ project DOGROBOT is
       ("MOD_WIN", "MOD_RPI");
    Module : Module_Type := external ("Module", "MOD_RPI");
    type Private_Warnings_Type is ("TRUE", "FALSE");
-   Private_Warnings : Private_Warnings_Type := external ("Compilation_Warnings", "TRUE");
+   Private_Warnings : Private_Warnings_Type := external ("Private_Warnings", "TRUE");
 
    package Builder is
       for Switches ("ada") use ("-g", "-k", "-s");
@@ -25,7 +25,7 @@ project DOGROBOT is
 
    package Compiler is
       for Switches ("ada") use ("-g", "-gnatf", "-gnateDModule=" & Module,
-                                "-gnateDPrivate_Warnings=" & Private_Warnings);
+                                "-gnateDPrivate_Warnings=" & Private_Warnings, "-gnat12");
    end Compiler;
 
    package Linker is
