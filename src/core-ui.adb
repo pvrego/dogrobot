@@ -23,30 +23,31 @@ package body CORE.UI is
       Text_IO.Put_Line ("#ui# Starting Basic User Interface...");
       accept Start;
 
-      -- =======================================================================
-      -- Get Device
-      -- =======================================================================
-
-      Text_IO.Put_Line ("#ui# ==========================================");
-      Text_IO.Put_Line ("#ui# ==== List of Devices ====");
-      Text_IO.Put_Line ("#ui# [1] Dev_Lamp0");
-      Text_IO.Put_Line ("#ui# [2] Dev_Lamp1");
-      Text_IO.Put_Line ("#ui# [3] Dev_Lamp2");
-      Text_IO.Put_Line ("#ui# [4] Dev_Motor0");
-      Text_IO.Put_Line ("#ui# [5] Dev_CheckFlag0");
-      Text_IO.Put_Line ("#ui# [6] Dev_CheckFlag1");
-      Text_IO.Put_Line ("#ui# [7] Dev_Analog0");
-      Text_IO.Put_Line ("#ui# [8] Dev_Analog1");
-      Text_IO.Put ("#ui# Choose [1-9] >> ");
       loop
-         Text_IO.Get (Curr_Char);
-         if Curr_Char in '1' .. '8' then
-            Curr_Dev_Number := Integer'Value ((1 => Curr_Char));
-            exit;
-         end if;
-      end loop;
+         -- ====================================================================
+         -- Get Device
+         -- ====================================================================
 
-      case Curr_Dev_Number is
+         Text_IO.Put_Line ("#ui# ==========================================");
+         Text_IO.Put_Line ("#ui# ==== List of Devices ====");
+         Text_IO.Put_Line ("#ui# [1] Dev_Lamp0");
+         Text_IO.Put_Line ("#ui# [2] Dev_Lamp1");
+         Text_IO.Put_Line ("#ui# [3] Dev_Lamp2");
+         Text_IO.Put_Line ("#ui# [4] Dev_Motor0");
+         Text_IO.Put_Line ("#ui# [5] Dev_CheckFlag0");
+         Text_IO.Put_Line ("#ui# [6] Dev_CheckFlag1");
+         Text_IO.Put_Line ("#ui# [7] Dev_Analog0");
+         Text_IO.Put_Line ("#ui# [8] Dev_Analog1");
+         Text_IO.Put ("#ui# Choose [1-9] >> ");
+         loop
+            Text_IO.Get (Curr_Char);
+            if Curr_Char in '1' .. '8' then
+               Curr_Dev_Number := Integer'Value ((1 => Curr_Char));
+               exit;
+            end if;
+         end loop;
+
+         case Curr_Dev_Number is
          when 1 => Curr_Dev := DEVS.SYSFS.STATIC.Dev_Lamp0;
          when 2 => Curr_Dev := DEVS.SYSFS.STATIC.Dev_Lamp1;
          when 3 => Curr_Dev := DEVS.SYSFS.STATIC.Dev_Lamp2;
@@ -56,14 +57,14 @@ package body CORE.UI is
          when 7 => Curr_Dev := DEVS.SYSFS.STATIC.Dev_Analog0;
          when 8 => Curr_Dev := DEVS.SYSFS.STATIC.Dev_Analog1;
          when others => null;
-      end case;
+         end case;
 
-      -- =======================================================================
-      -- Direct actions from devices
-      -- =======================================================================
-      Curr_Char := ' ';
-      Text_IO.Put_Line ("#ui# ==== Actions for "& DEVS.SYSFS.Class_Type'Image (Curr_Dev.Class)&" ====");
-      case Curr_Dev.Class is
+         -- ====================================================================
+         -- Direct actions from devices
+         -- ====================================================================
+         Curr_Char := ' ';
+         Text_IO.Put_Line ("#ui# ==== Actions for "& DEVS.SYSFS.Class_Type'Image (Curr_Dev.Class)&" ====");
+         case Curr_Dev.Class is
          when DEVS.SYSFS.DIGITAL_OUT =>
             Text_IO.Put_Line ("#ui# [1] Read State");
             Text_IO.Put_Line ("#ui# [2] Turn On");
@@ -102,7 +103,8 @@ package body CORE.UI is
             Text_IO.Put_Line ("#ui# [1] Set Period > ");
             Text_IO.Put_Line ("#ui# [2] Set Duty Cycle > ");
             Text_IO.Put_Line ("Action for PWM");
-      end case;
+         end case;
+      end loop;
 
    exception
       when The_Error : others =>
