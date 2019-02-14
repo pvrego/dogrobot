@@ -17,6 +17,10 @@ begin
 
    Text_IO.Put_Line ("============ DogRobot ============");
 
+   -- ==========================================================================
+   -- Sockets management
+   -- ==========================================================================
+
    COMM.SOCKETS.Socket_Manager.Init;
 
 #if Module = "MOD_WIN" then
@@ -33,14 +37,19 @@ begin
    begin
       Success := CORE.BUFFER.Put (Command);
    end;
+#end if;
 
-#elsif Module = "MOD_RPI" then
+   COMM.SOCKETS.Socket_Manager.Start;
+
+   -- ==========================================================================
+   -- Devices management
+   -- ==========================================================================
+
+#if Module = "MOD_RPI" then
    SYSFS.Init_Devices;
    --     DEVS.SYSFS.DeInit_Devices;
    TESTS.Test_Lamps_012;
 #end if;
-
-   COMM.SOCKETS.Socket_Manager.Start;
 
 exception
    when The_Error : others =>
