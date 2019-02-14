@@ -15,9 +15,9 @@ package body CORE.UI is
    task body Basic_UI_Task_Type is
       Curr_Char : Character;
       use Ada.Characters.Handling;
-      Curr_Dev_Number : Integer;
+      Curr_Dev_Number : Integer := 0;
       Curr_Dev : access DEVS.SYSFS.Device_Type;
-      Curr_Action : Integer;
+      Curr_Action : Integer := 0;
 
    begin
       Text_IO.Put_Line ("#ui# Starting Basic User Interface...");
@@ -61,23 +61,47 @@ package body CORE.UI is
       -- =======================================================================
       -- Direct actions from devices
       -- =======================================================================
-
+      Curr_Char := ' ';
       Text_IO.Put_Line ("#ui# ==== Actions for "& DEVS.SYSFS.Class_Type'Image (Curr_Dev.Class)&" ====");
       case Curr_Dev.Class is
          when DEVS.SYSFS.DIGITAL_OUT =>
             Text_IO.Put_Line ("#ui# [1] Read State");
             Text_IO.Put_Line ("#ui# [2] Turn On");
             Text_IO.Put_Line ("#ui# [3] Turn Off");
+            loop
+               Text_IO.Get (Curr_Char);
+               if Curr_Char in '1' .. '3' then
+                  Curr_Action := Integer'Value ((1 => Curr_Char));
+                  exit;
+               end if;
+            end loop;
+            case Curr_Action is
+               when 1 => Text_IO.Put_Line ("Action for DIGITAL_OUT"); -- Read state action
+               when 2 => Text_IO.Put_Line ("Action for DIGITAL_OUT"); -- Turn on
+               when 3 => Text_IO.Put_Line ("Action for DIGITAL_OUT"); -- Turn off
+               when others => null;
+            end case;
 
          when DEVS.SYSFS.DIGITAL_IN =>
             Text_IO.Put_Line ("#ui# [1] Read State");
+            loop
+               Text_IO.Get (Curr_Char);
+               if Curr_Char = '1' then exit; end if;
+            end loop;
+            Text_IO.Put_Line ("Action for DIGITAL_IN");
 
          when DEVS.SYSFS.ANALOG_IN =>
             Text_IO.Put_Line ("#ui# [1] Read Value");
+            loop
+               Text_IO.Get (Curr_Char);
+               if Curr_Char = '1' then exit; end if;
+            end loop;
+            Text_IO.Put_Line ("Action for ANALOG_IN");
 
          when DEVS.SYSFS.PWM =>
             Text_IO.Put_Line ("#ui# [1] Set Period > ");
             Text_IO.Put_Line ("#ui# [2] Set Duty Cycle > ");
+            Text_IO.Put_Line ("Action for PWM");
       end case;
 
    exception
