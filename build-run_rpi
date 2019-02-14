@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# Build file for Raspberry Pi command line
+gprbuild -d -Pdogrobot.gpr -XModule=MOD_RPI
+
+# Run server
+sudo bin/server_rpi
