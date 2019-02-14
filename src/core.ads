@@ -15,6 +15,8 @@ package CORE is
    procedure Handle_Response
      (Command : COMM.Command_Type);
 
---     procedure Digital_Out_TurnOn
---       (Dev : SYSFS.Device_Type
+   function DigitalOut_Put_State
+     (Dev : access SYSFS.Device_Type; State : SYSFS.State_Type)
+     return Boolean;
+
 end CORE;
