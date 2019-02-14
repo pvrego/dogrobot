@@ -6,6 +6,7 @@ with Text_IO;
 with Ada.Exceptions;
 with GNAT.Traceback.Symbolic;
 with TESTS;
+with CORE.UI;
 
 -- =============================================================================
 -- Implements the DogRobot main application in Raspberry Pi and Windows.
@@ -48,7 +49,18 @@ begin
 #if Module = "MOD_RPI" then
    SYSFS.Init_Devices;
    --     DEVS.SYSFS.DeInit_Devices;
-   TESTS.Test_Lamps_012;
+#end if;
+
+   -- ==========================================================================
+   -- User Interface
+   -- ==========================================================================
+
+#if Module = "MOD_WIN" then
+   declare
+      Basic_UI : CORE.UI.Basic_UI_Task_Type;
+   begin
+      Basic_UI.Start;
+   end;
 #end if;
 
 exception
