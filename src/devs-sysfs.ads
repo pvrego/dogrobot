@@ -1,5 +1,7 @@
 -- =============================================================================
 -- Responsible for SYSFS setups and management.
+-- Para usar o wiringpi (e portanto o command-line gpio), instalar via apt-get
+--   sudo apt-get install wiringpi
 -- =============================================================================
 package DEVS.SYSFS is
 
@@ -122,25 +124,18 @@ package DEVS.SYSFS is
       ON  => 1);
 
    -- ==========================================================================
-   -- Public Services
-   -- ==========================================================================
-
-   -- Para usar o wiringpi (e portanto o command-line gpio), instalar via apt-get
-   --   sudo apt-get install wiringpi
-
-   procedure Init_Devices (Forced : Boolean := False);
-   procedure DeInit_Devices;
-
-   procedure Test_Lamps_012;
-
-   -- ==========================================================================
    -- Define public interface for Device_Types
    -- ==========================================================================
-   type Public_Device_Type is abstract tagged null record;
+   type Public_Device_Type is abstract tagged record
+      Pin   : Pin_Type;
+      Class : Class_Type;
+   end record;
+   function Construct
+     (Pin : Pin_Type; Class : Class_Type) return Public_Device_Type is abstract;
    function Init
-     (This : Public_Device_Type; Forced : Boolean) return Boolean is abstract;
+     (This : in out Public_Device_Type; Forced : Boolean) return Boolean is abstract;
    function DeInit
-     (This : Public_Device_Type) return Boolean is abstract;
+     (This : in out Public_Device_Type) return Boolean is abstract;
    function Set_State
      (This : Public_Device_Type; State : State_Type) return Boolean is abstract;
    function Get_Value
@@ -153,13 +148,14 @@ package DEVS.SYSFS is
 
 private
 
-   type Device_Type is new Public_Device_Type with record
-      Pin   : Pin_Type;
-      Class : Class_Type;
-   end record;
+   type Device_Type is new Public_Device_Type with
+      record
+         Assigned : Boolean;
+      end record;
 
-   overriding function Init (This : Device_Type; Forced : Boolean) return Boolean;
-   overriding function DeInit (This : Device_Type) return Boolean;
+   overriding function Construct (Pin : Pin_Type; Class : Class_Type) return Device_Type;
+   overriding function Init (This : in out Device_Type; Forced : Boolean) return Boolean;
+   overriding function DeInit (This : in out Device_Type) return Boolean;
 
    function Export (This : Device_Type; Forced : Boolean) return Boolean;
    function Unexport (This : Device_Type) return Boolean;
@@ -167,21 +163,5 @@ private
 
    overriding function Set_State (This : Device_Type; State : State_Type) return Boolean;
    overriding function Get_Value (This : Device_Type) return Integer;
-
-   -- ==========================================================================
-   -- Devices in use
-   -- ==========================================================================
-
-   Assigned_GPIO : array (GPIO_Descriptor_Type) of Boolean :=
-     (others => False);
-
-   Dev_Lamp0      : Device_Type := (Pin => PIN_03, Class => DIGITAL_OUT);
-   Dev_Lamp1      : Device_Type := (Pin => PIN_05, Class => DIGITAL_OUT);
-   Dev_Lamp2      : Device_Type := (Pin => PIN_07, Class => DIGITAL_OUT);
-   Dev_Motor0     : Device_Type := (Pin => PIN_12, Class => PWM);
-   Dev_CheckFlag0 : Device_Type := (Pin => PIN_13, Class => DIGITAL_IN);
-   Dev_CheckFlag1 : Device_Type := (Pin => PIN_15, Class => DIGITAL_IN);
-   Dev_Analog0    : Device_Type := (Pin => PIN_16, Class => ANALOG_IN);
-   Dev_Analog1    : Device_Type := (Pin => PIN_18, Class => ANALOG_IN);
 
 end DEVS.SYSFS;

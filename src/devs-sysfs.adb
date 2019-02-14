@@ -4,12 +4,23 @@ with UTILS; use UTILS;
 
 package body DEVS.SYSFS is
 
+   function Construct (Pin : Pin_Type; Class : Class_Type)
+     return Device_Type
+   is
+      To_Return : Device_Type;
+   begin
+      To_Return.Pin := Pin;
+      To_Return.Class := Class;
+      To_Return.Assigned := False;
+      return To_Return;
+   end Construct;
+
    ----------
    -- Init --
    ----------
 
    function Init
-     (This : Device_Type;
+     (This : in out Device_Type;
       Forced : Boolean)
       return Boolean
    is
@@ -22,7 +33,7 @@ package body DEVS.SYSFS is
 #end if;
       -- Check if the pin is already assigned to another GPIO device to avoid
       -- function conflicts.
-      if not Assigned_GPIO (TO_GPIO (This.Pin)) then
+      if not This.Assigned then
 
          case This.Class is
             when DIGITAL_OUT =>
@@ -50,7 +61,7 @@ package body DEVS.SYSFS is
 
          end case;
 
-         Assigned_GPIO (TO_GPIO (This.Pin)) := True;
+         This.Assigned := True;
 
          return True;
       else
@@ -64,12 +75,12 @@ package body DEVS.SYSFS is
    end Init;
 
    function DeInit
-     (This : Device_Type)
+     (This : in out Device_Type)
       return Boolean
    is
    begin
-      if Assigned_GPIO (TO_GPIO (This.Pin)) and This.Unexport then
-         Assigned_GPIO (TO_GPIO (This.Pin)) := False;
+      if This.Assigned and This.Unexport then
+         This.Assigned := False;
          return True;
       end if;
       return False;
@@ -153,7 +164,7 @@ package body DEVS.SYSFS is
         & "/value";
       Curr_File : Text_IO.File_Type;
    begin
-      if Assigned_GPIO (TO_GPIO (This.Pin)) then
+      if This.Assigned then
          Text_IO.Open (Curr_File, Text_IO.Out_File, Full_Name);
          Text_IO.Put_Line (Curr_File, Format (Integer'Image (State_Type'Pos (State))));
          Text_IO.Close (Curr_File);
@@ -177,7 +188,7 @@ package body DEVS.SYSFS is
       Curr_File : Text_IO.File_Type;
       Value : Integer := 0;
    begin
-      if Assigned_GPIO (TO_GPIO (This.Pin)) then
+      if This.Assigned then
          Text_IO.Open (Curr_File, Text_IO.In_File, Full_Name);
          Value := Integer'Value (Text_IO.Get_Line (Curr_File));
          Text_IO.Close (Curr_File);
@@ -192,54 +203,5 @@ package body DEVS.SYSFS is
          Text_IO.Put_Line("!!! "&Ada.Exceptions.Exception_Information (The_Error));
          return 0;
    end Get_Value;
-
-   procedure Init_Devices
-     (Forced : Boolean := False) is
-   begin
-
-      if not Dev_Lamp0.Init (True) or
-        not Dev_Lamp1.Init (True) or
-        not Dev_Lamp2.Init (True) or
-        --          not Dev_Motor0.Init (True) or
-        --          not Dev_Analog0.Init (True) or
-        --          not Dev_Analog1.Init (True)
-        not Dev_CheckFlag0.Init (True)or
-        not Dev_CheckFlag1.Init (True)
-      then
-         Text_IO.Put_Line
-           ("There was an error while initializing the devices.");
-      else
-         Text_IO.Put_Line ("#devs# Devices initialized successfully.");
-      end if;
-
-   end Init_Devices;
-
-   procedure DeInit_Devices is
-   begin
-      if Dev_Lamp0.DeInit and
-        Dev_Lamp1.DeInit and
-        Dev_Lamp2.DeInit and
-        Dev_Motor0.DeInit and
-        Dev_CheckFlag0.DeInit and
-        Dev_CheckFlag1.DeInit and
-        Dev_Analog0.DeInit and
-        Dev_Analog1.DeInit and
-        Dev_Lamp0.DeInit
-      then
-         Text_IO.Put_Line ("#devs# All devices uninitialized successfully.");
-      end if;
-   end DeInit_Devices;
-
-   procedure Test_Lamps_012 is
-      Delay_Time : constant Duration := 0.01;
-   begin
-      --        for Index in Integer range 1 .. 20
-      loop
-         if (Dev_Lamp0.Set_State (ON)) then Text_IO.Put ("^"); end if;
-         delay Delay_Time;
-         if (Dev_Lamp0.Set_State (OFF)) then Text_IO.Put ("~"); end if;
-         delay Delay_Time;
-      end loop;
-   end Test_Lamps_012;
 
 end DEVS.SYSFS;

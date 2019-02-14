@@ -1,7 +1,10 @@
 with Text_IO;
+with DEVS.SYSFS; use DEVS.SYSFS;
+with DEVS.SYSFS.STATIC;
 
 package body TESTS is
 
+   package SYSFS renames DEVS.SYSFS.STATIC;
    ------------------------
    -- Test_File_Handling --
    ------------------------
@@ -20,5 +23,18 @@ package body TESTS is
       Text_IO.Close (File_In);
       Text_IO.Put_Line (File_Path & "is closed.");
    end Test_File_Handling;
+
+
+   procedure Test_Lamps_012 is
+      Delay_Time : constant Duration := 0.01;
+   begin
+      --        for Index in Integer range 1 .. 20
+      loop
+         if (SYSFS.Dev_Lamp0.Set_State (ON)) then Text_IO.Put ("^"); end if;
+         delay Delay_Time;
+         if (SYSFS.Dev_Lamp0.Set_State (OFF)) then Text_IO.Put ("~"); end if;
+         delay Delay_Time;
+      end loop;
+   end Test_Lamps_012;
 
 end TESTS;
