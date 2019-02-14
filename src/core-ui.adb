@@ -5,6 +5,7 @@ with DEVS.SYSFS.STATIC;
 with Ada.Exceptions;
 with GNAT.Traceback.Symbolic;
 with UTILS;
+with CORE.BUFFER;
 
 package body CORE.UI is
 
@@ -18,6 +19,7 @@ package body CORE.UI is
       Curr_Dev_Number : Integer := 0;
       Curr_Dev : access DEVS.SYSFS.Device_Type;
       Curr_Action : Integer := 0;
+      Success : Boolean := False;
 
    begin
       Text_IO.Put_Line ("#ui# Starting Basic User Interface...");
@@ -81,7 +83,18 @@ package body CORE.UI is
             case Curr_Action is
                when 1 => Text_IO.Put_Line ("Action for DIGITAL_OUT"); -- Read state action
                when 2 => Text_IO.Put_Line ("Action for DIGITAL_OUT"); -- Turn on
+                  if CORE.BUFFER.Put
+                    (('#', DEVS.SYSFS.STATIC.PIN_TO_COMMAND (Curr_Dev.Pin),
+                     COMM.REQUEST, (True, 0.0), '/', '#')) then
+                     Text_IO.Put_Line ("Action for DIGITAL_OUT sent successfully.");
+                  end if;
+
                when 3 => Text_IO.Put_Line ("Action for DIGITAL_OUT"); -- Turn off
+                  if CORE.BUFFER.Put
+                    (('#', DEVS.SYSFS.STATIC.PIN_TO_COMMAND (Curr_Dev.Pin),
+                     COMM.REQUEST, (True, 0.0), '/', '#')) then
+                     Text_IO.Put_Line ("Action for DIGITAL_OUT sent successfully.");
+                  end if;
                when others => null;
             end case;
 

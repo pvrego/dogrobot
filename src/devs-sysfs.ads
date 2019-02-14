@@ -1,3 +1,5 @@
+with COMM;
+
 -- =============================================================================
 -- Responsible for SYSFS setups and management.
 -- Para usar o wiringpi (e portanto o command-line gpio), instalar via apt-get
