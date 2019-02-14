@@ -7,4 +7,4 @@ svn up --force
 gprbuild -d -Pdogrobot.gpr -XModule=MOD_RPI
 
 # Run server
-bin/server_rpi
+sudo bin/server_rpi
