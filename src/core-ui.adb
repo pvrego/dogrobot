@@ -83,11 +83,24 @@ package body CORE.UI is
             case Curr_Action is
                when 1 => Text_IO.Put_Line ("Action for DIGITAL_OUT"); -- Read state action
                when 2 => Text_IO.Put_Line ("Action for DIGITAL_OUT"); -- Turn on
-                  if CORE.BUFFER.Put
-                    (('#', DEVS.SYSFS.STATIC.PIN_TO_COMMAND (Curr_Dev.Pin),
-                     COMM.REQUEST, (True, 0.0), '/', '#')) then
-                     Text_IO.Put_Line ("Action for DIGITAL_OUT sent successfully.");
-                  end if;
+--                    if CORE.BUFFER.Put
+--                      (('#', DEVS.SYSFS.STATIC.PIN_TO_COMMAND (Curr_Dev.Pin),
+--                       COMM.REQUEST, (True, 0.0), '/', '#')) then
+--                       Text_IO.Put_Line ("Action for DIGITAL_OUT sent successfully.");
+--                    end if;
+   declare
+      Command : COMM.Command_Type :=
+        (Header          => '#',
+         Id              => COMM.SYSTEM_WIN,
+         Category        => COMM.REQUEST,
+         Data => (Status => True,
+                  Value  => 0.0),
+         Footer_Slash    => '/',
+         Footer_Term     => '#');
+      Success : Boolean;
+   begin
+      Success := CORE.BUFFER.Put (Command);
+                  end;
 
                when 3 => Text_IO.Put_Line ("Action for DIGITAL_OUT"); -- Turn off
                   if CORE.BUFFER.Put

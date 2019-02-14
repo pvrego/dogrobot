@@ -80,7 +80,6 @@ package body COMM.SOCKETS is
 
       accept Start;
 #if Module = "MOD_RPI" or Module = "MOD_ALL" then
-      -- accept Start;
       loop
          -- Return a stream associated to the connected socket
          Channel := SOCKETS.Stream (Socket, Address);
@@ -105,32 +104,35 @@ package body COMM.SOCKETS is
       -- SOCKETS.Finalize;
 
 #else -- Module = "MOD_WIN"
-      -- Return a stream associated to the connected socket
-      Channel := SOCKETS.Stream (Socket, Address);
+      loop
+         -- Return a stream associated to the connected socket
+         Channel := SOCKETS.Stream (Socket, Address);
 
-      declare
-         Command : COMM.Command_Type;
-      begin
-         if (CORE.BUFFER.Get (Command)) then
-            String'Output (Channel, String (COMM.CODING.To_String (Command)));
-         end if;
-      end;
+         declare
+            Command : COMM.Command_Type;
+         begin
+            if (CORE.BUFFER.Get (Command)) then
+               String'Output (Channel, String (COMM.CODING.To_String (Command)));
 
-      declare
-         Message  : String := String'Input (Channel);
-         Success  : Boolean;
-      begin
-         Success := COMM.PROCESS.Process_Response_Message (Message);
+               declare
+                  Message  : String := String'Input (Channel);
+                  Success  : Boolean;
+               begin
+                  Success := COMM.PROCESS.Process_Response_Message (Message);
 
-         --  Get the address of the sender
-         Address := SOCKETS.Get_Address (Channel);
-         Text_IO.Put_Line ("[Received from " & SOCKETS.Image (Address)&"] "&Message);
-      end;
+                  --  Get the address of the sender
+                  Address := SOCKETS.Get_Address (Channel);
+                  Text_IO.Put_Line ("[Received from " & SOCKETS.Image (Address)&"] "&Message);
+               end;
+            end if;
+         end;
+
+
+      end loop;
       -- accept Stop;
-      SOCKETS.Close_Socket (Socket);
-      SOCKETS.Finalize;
+      -- SOCKETS.Close_Socket (Socket);
+      -- SOCKETS.Finalize;
 #end if;
-
 
    exception
       when The_Error : others =>
