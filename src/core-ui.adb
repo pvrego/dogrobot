@@ -2,6 +2,9 @@ with Text_IO;
 with Ada.Characters.Handling;
 with DEVS.SYSFS;
 with DEVS.SYSFS.STATIC;
+with Ada.Exceptions;
+with GNAT.Traceback.Symbolic;
+with UTILS;
 
 package body CORE.UI is
 
@@ -14,10 +17,15 @@ package body CORE.UI is
       use Ada.Characters.Handling;
       Curr_Dev_Number : Integer;
       Curr_Dev : access DEVS.SYSFS.Device_Type;
+      Curr_Action : Integer;
 
    begin
       Text_IO.Put_Line ("#ui# Starting Basic User Interface...");
       accept Start;
+
+      -- =======================================================================
+      -- Get Device
+      -- =======================================================================
 
       Text_IO.Put_Line ("#ui# ==========================================");
       Text_IO.Put_Line ("#ui# ==== List of Devices ====");
@@ -32,16 +40,50 @@ package body CORE.UI is
       Text_IO.Put ("#ui# Choose [1-9] >> ");
       loop
          Text_IO.Get (Curr_Char);
-         if Is_Decimal_Digit (Curr_Char) and then
-           Integer'Value (Character'Image (Curr_Char)) > 0
-         then
+         if Curr_Char in '1' .. '8' then
+            Curr_Dev_Number := Integer'Value ((1 => Curr_Char));
             exit;
          end if;
       end loop;
+
       case Curr_Dev_Number is
-         when 1 => null; -- Curr_Dev := DEVS.SYSFS.STATIC.Dev_Lamp0;
+         when 1 => Curr_Dev := DEVS.SYSFS.STATIC.Dev_Lamp0;
+         when 2 => Curr_Dev := DEVS.SYSFS.STATIC.Dev_Lamp1;
+         when 3 => Curr_Dev := DEVS.SYSFS.STATIC.Dev_Lamp2;
+         when 4 => Curr_Dev := DEVS.SYSFS.STATIC.Dev_Motor0;
+         when 5 => Curr_Dev := DEVS.SYSFS.STATIC.Dev_CheckFlag0;
+         when 6 => Curr_Dev := DEVS.SYSFS.STATIC.Dev_CheckFlag1;
+         when 7 => Curr_Dev := DEVS.SYSFS.STATIC.Dev_Analog0;
+         when 8 => Curr_Dev := DEVS.SYSFS.STATIC.Dev_Analog1;
          when others => null;
       end case;
+
+      -- =======================================================================
+      -- Direct actions from devices
+      -- =======================================================================
+
+      Text_IO.Put_Line ("#ui# ==== Actions for "& DEVS.SYSFS.Class_Type'Image (Curr_Dev.Class)&" ====");
+      case Curr_Dev.Class is
+         when DEVS.SYSFS.DIGITAL_OUT =>
+            Text_IO.Put_Line ("#ui# [1] Read State");
+            Text_IO.Put_Line ("#ui# [2] Turn On");
+            Text_IO.Put_Line ("#ui# [3] Turn Off");
+
+         when DEVS.SYSFS.DIGITAL_IN =>
+            Text_IO.Put_Line ("#ui# [1] Read State");
+
+         when DEVS.SYSFS.ANALOG_IN =>
+            Text_IO.Put_Line ("#ui# [1] Read Value");
+
+         when DEVS.SYSFS.PWM =>
+            Text_IO.Put_Line ("#ui# [1] Set Period > ");
+            Text_IO.Put_Line ("#ui# [2] Set Duty Cycle > ");
+      end case;
+
+   exception
+      when The_Error : others =>
+         Text_IO.Put_Line("!!! "&Ada.Exceptions.Exception_Information (The_Error));
+         Text_Io.Put_Line ("Traceback => " & GNAT.Traceback.Symbolic.Symbolic_Traceback(The_Error));
 
    end Basic_UI_Task_Type;
 

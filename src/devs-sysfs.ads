@@ -131,7 +131,7 @@ package DEVS.SYSFS is
       Class : Class_Type;
    end record;
    function Construct
-     (Pin : Pin_Type; Class : Class_Type) return Public_Device_Type is abstract;
+     (Pin : Pin_Type; Class : Class_Type) return access Public_Device_Type is abstract;
    function Init
      (This : in out Public_Device_Type; Forced : Boolean) return Boolean is abstract;
    function DeInit
@@ -153,7 +153,7 @@ private
          Assigned : Boolean;
       end record;
 
-   overriding function Construct (Pin : Pin_Type; Class : Class_Type) return Device_Type;
+   overriding function Construct (Pin : Pin_Type; Class : Class_Type) return access Device_Type;
    overriding function Init (This : in out Device_Type; Forced : Boolean) return Boolean;
    overriding function DeInit (This : in out Device_Type) return Boolean;
 

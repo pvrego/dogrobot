@@ -5,9 +5,9 @@ with UTILS; use UTILS;
 package body DEVS.SYSFS is
 
    function Construct (Pin : Pin_Type; Class : Class_Type)
-     return Device_Type
+     return access Device_Type
    is
-      To_Return : Device_Type;
+      To_Return : access Device_Type := new Device_Type;
    begin
       To_Return.Pin := Pin;
       To_Return.Class := Class;
