@@ -39,7 +39,7 @@ package body CORE.UI is
          end if;
       end loop;
       case Curr_Dev_Number is
-         when 1 => Curr_Dev := DEVS.SYSFS.STATIC.Dev_Lamp0;
+         when 1 => null; -- Curr_Dev := DEVS.SYSFS.STATIC.Dev_Lamp0;
          when others => null;
       end case;
 
