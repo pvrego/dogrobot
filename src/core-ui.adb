@@ -38,10 +38,11 @@ package body CORE.UI is
          Text_IO.Put_Line ("#ui# [6] Dev_CheckFlag1");
          Text_IO.Put_Line ("#ui# [7] Dev_Analog0");
          Text_IO.Put_Line ("#ui# [8] Dev_Analog1");
+         Text_IO.Put_Line ("#ui# [9] ---> Exit");
          Text_IO.Put ("#ui# Choose [1-9] >> ");
          loop
             Text_IO.Get (Curr_Char);
-            if Curr_Char in '1' .. '8' then
+            if Curr_Char in '1' .. '9' then
                Curr_Dev_Number := Integer'Value ((1 => Curr_Char));
                exit;
             end if;
@@ -56,6 +57,7 @@ package body CORE.UI is
          when 6 => Curr_Dev := DEVS.SYSFS.STATIC.Dev_CheckFlag1;
          when 7 => Curr_Dev := DEVS.SYSFS.STATIC.Dev_Analog0;
          when 8 => Curr_Dev := DEVS.SYSFS.STATIC.Dev_Analog1;
+         when 9 => exit;
          when others => null;
          end case;
 
