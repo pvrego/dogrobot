@@ -2,7 +2,7 @@ with COMM;
 
 -- =============================================================================
 -- Responsible for SYSFS setups and management.
--- Para usar o wiringpi (e portanto o command-line gpio), instalar via apt-get
+-- To use wiringpi (thus the gpio command-line), install from apt-get
 --   sudo apt-get install wiringpi
 -- =============================================================================
 package DEVS.SYSFS is
